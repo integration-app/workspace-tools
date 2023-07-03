@@ -4,7 +4,8 @@
   "private": true,
   "dependencies": {
     "@dinuac/react-json-view": "^1.21.5",
-    "@integration-app/react": "^0.1.20",
+    "@integration-app/react": "^0.2.0",
+    "@integration-app/ui": "^0.7.12",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
