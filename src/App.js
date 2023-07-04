@@ -45,7 +45,7 @@ function App() {
   return (
     <>
       <CredentialsInput title="Export Workspace" setToken={setOriginalToken}></CredentialsInput>
-      <CredentialsInput title="Import Workspace" setToken={setCopyToken} x></CredentialsInput>
+      <CredentialsInput title="Import Workspace" setToken={setCopyToken}></CredentialsInput>
 
       <div className="mockup-window border bg-base-300 max-w-screen-xl container mx-auto">
         <div className="flex justify-center px-4 py-16 bg-base-200">
