@@ -3,9 +3,7 @@ import './App.css';
 import { useState, useEffect } from "react";
 import ReactJson from '@dinuac/react-json-view'
 import * as jose from 'jose'
-import * as Button from '@integration-app/ui/Button'
-
-
+import Button from '@integration-app/ui/Button'
 
 const ELEMENTS = {
   "integrations": {
@@ -47,7 +45,7 @@ function App() {
   return (
     <>
       <CredentialsInput title="Export Workspace" setToken={setOriginalToken}></CredentialsInput>
-      <CredentialsInput title="Import Workspace" setToken={setCopyToken}x></CredentialsInput>
+      <CredentialsInput title="Import Workspace" setToken={setCopyToken}></CredentialsInput>
 
       <div className="mockup-window border bg-base-300 max-w-screen-xl container mx-auto">
         <div className="flex justify-center px-4 py-16 bg-base-200">
@@ -58,7 +56,7 @@ function App() {
                   variant={'primary'}
                   size={'medium'}
                 >
-                   Button
+                  Button
                 </Button>
                 <IntegrationAppProvider token={originalToken} >
                   <ExportData data={data} setData={setData}></ExportData>
@@ -117,18 +115,18 @@ function ExportData(props) {
           )
         })}
         {INTEGRATION_SPECIFIC_ELEMENTS.map((el) => {
-              return (
-                <label className="label cursor-pointer">
-                  <span className="label-text">Integration-specific {el}</span>
-                  <input type="checkbox" onChange={async () => {
-                    const integrations = (await iApp.integrations.find()).items
-                    for (let integration of integrations) {
-                      addToData((await iApp[el].find({integrationKey:integration.key})).items, `${el}/${integration.key}`)
-                    }
-                    
-                  }} className="checkbox" />
-                </label>
-              )
+          return (
+            <label className="label cursor-pointer">
+              <span className="label-text">Integration-specific {el}</span>
+              <input type="checkbox" onChange={async () => {
+                const integrations = (await iApp.integrations.find()).items
+                for (let integration of integrations) {
+                  addToData((await iApp[el].find({ integrationKey: integration.key })).items, `${el}/${integration.key}`)
+                }
+
+              }} className="checkbox" />
+            </label>
+          )
         })}
 
       </div>
@@ -143,9 +141,9 @@ async function getDestinationWorkspaceData(elementTypes, iApp) {
   const dataPromises = []
   for (let elementType of elementTypes) {
     dataPromises.push(await iApp[elementType].find())
-  } 
+  }
   const dataArr = await Promise.all(dataPromises)
-  return Object.assign(...elementTypes.map((k, i) => ({ [k]: dataArr[i].items }))) 
+  return Object.assign(...elementTypes.map((k, i) => ({ [k]: dataArr[i].items })))
 }
 
 
@@ -160,27 +158,27 @@ function ImportData(props) {
     for (let elementType of Object.keys(ELEMENTS)) {
       if (elementType in data) {
         for (let element of data[elementType]) {
-          
+
           delete element.id
           delete element.revision
           delete element.publishedRevision
-          
+
           if (elementType == "fieldMappings") {
             delete element.dataSourceId
           }
 
           const existingElements = destinationWorkspace[elementType].filter((el) => el.key == element.key)
-          
+
           if (existingElements.length > 0) {
             jobs.push(App[ELEMENTS[elementType].element](existingElements[0].id).put(element).then((el) => console.log("updated", elementType, element.key, el.id)))
           } else {
             jobs.push(iApp[elementType].create(element).then((el) => console.log("created", elementType, element.key, el.id)))
           }
-        
+
         }
       }
     }
-    
+
     await Promise.all(jobs).then(() => console.log("done"))
   }
 
