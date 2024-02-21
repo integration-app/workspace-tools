@@ -25,3 +25,4 @@ package-lock.json
 
 # Ignore yarn.lock for yarn
 yarn.lock
+.env
