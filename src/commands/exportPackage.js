@@ -1,5 +1,5 @@
 const { IntegrationAppClient } = require('@integration-app/sdk')
-const { generateAccessToken, getWorkspaceData, coloredLog} = require('../src/util.js')
+const { generateAccessToken, getWorkspaceData, coloredLog} = require('../util.js')
 const dotenv = require('dotenv');
 const fs = require('fs');
 

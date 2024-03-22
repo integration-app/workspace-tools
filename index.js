@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 const { program } = require('commander');
-const { exportPackage } = require('./commands/exportPackage')
-const { importPackage } = require('./commands/importPackage')
+const { exportPackage } = require('./src/commands/exportPackage')
+const { importPackage } = require('./src/commands/importPackage')
 
 
 program

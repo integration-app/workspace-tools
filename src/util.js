@@ -6,7 +6,8 @@ async function getWorkspaceData(iApp, logs = "full") {
     coloredLog("Getting workspace data", "BgBlue")
 
     const integrations = await iApp.integrations.findAll()
-    workspaceData.integrations = integrations
+    workspaceData.integrations = integrations.map((item) => cleanUpForExport("integrations", item))
+
     console.group();
     for (let element of Object.values(INTEGRATION_ELEMENTS)) {
         if (element.exportable === false) continue
@@ -14,14 +15,14 @@ async function getWorkspaceData(iApp, logs = "full") {
         coloredLog(`${element.elements}`,"Blue")
         // Get all universal elements
         const elements = await iApp[element.elements].findAll()
-        elementEnteties.push(...elements.map((item) => { return (element.exportCleanup && element.exportCleanup(baseExportCleanup(item))) || baseExportCleanup(item) }))
+        elementEnteties.push(...elements.map((item) => { return cleanUpForExport(element.elements, item) }))
         // Get all integration specific elements
         if (element.integrationSpecific) {
             for (let integration of integrations) {
                 const integrationElements = await iApp[element.elements].findAll({ integrationId: integration.id })
                 elementEnteties.push(...integrationElements.map((item) => {
                     item.integrationKey = integration.key
-                    return (element.exportCleanup && element.exportCleanup(baseExportCleanup(item))) || baseExportCleanup(item)
+                    return cleanUpForExport(element.elements, item)
                 }))
             }
         }
@@ -92,7 +93,10 @@ function splitWorkspaceData(data) {
     }
     return { universalElements, integrationSpecificElements }
 }
-
+function cleanUpForExport(elementType, element) {
+    element = baseExportCleanup(element)
+    return INTEGRATION_ELEMENTS[elementType].exportCleanup ? INTEGRATION_ELEMENTS[elementType].exportCleanup(element) : element
+}
 function hasParent(element) {
     return Object.keys(element).some((key) => (/universal.*Id/g).test(key) || (/parentId/g).test(key))
 }

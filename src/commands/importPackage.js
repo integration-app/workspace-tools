@@ -1,7 +1,7 @@
 const fs = require('fs');
-const { INTEGRATION_ELEMENTS, baseExportCleanup } = require('../src/integrationElements.js')
+const { INTEGRATION_ELEMENTS, baseExportCleanup } = require('../integrationElements.js')
 const { IntegrationAppClient } = require('@integration-app/sdk')
-const { generateAccessToken, getWorkspaceData, hasParent, splitWorkspaceData, coloredLog } = require('../src/util.js')
+const { generateAccessToken, getWorkspaceData, hasParent, splitWorkspaceData, coloredLog } = require('../util.js')
 const dotenv = require('dotenv');
 const { exit } = require('process');
 
