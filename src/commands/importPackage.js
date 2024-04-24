@@ -3,53 +3,76 @@ const { INTEGRATION_ELEMENTS, baseExportCleanup } = require('../integrationEleme
 const { IntegrationAppClient } = require('@integration-app/sdk')
 const { generateAccessToken, getWorkspaceData, hasParent, splitWorkspaceData, coloredLog } = require('../util.js')
 const dotenv = require('dotenv');
-const { exit } = require('process');
-
+const path = require('path');
+const YAML = require('js-yaml');
 async function importPackage() {
     dotenv.config();
-   
+    if (!process.argv[3]) {
+        process.argv[3] = path.join(__dirname, '../../dist');
+    }
     const token = generateAccessToken(process.env.IMPORT_WORKSPACE_KEY, process.env.IMPORT_WORKSPACE_SECRET)
     const iApp = new IntegrationAppClient({ token: token })
-    
+
     const warnings = [] // Collect all warnings and display them at the end
-    
+
     const workspaceData = await getWorkspaceData(iApp, logs = "minified")
     // Matching imported data with existing data
-    if (process.argv[3]) {
-        data = JSON.parse(fs.readFileSync(process.argv[3], 'utf8'))
+    
+    const data = {}
+    const elementTypes = fs.readdirSync(process.argv[3])
+    coloredLog(`Loading Files`, "BgBlue")
 
-        const {universalElements, integrationSpecificElements} = splitWorkspaceData(data)
+    for (elementType of elementTypes) {
+        data[elementType] = []
+        const elementKeys = fs.readdirSync(path.join(process.argv[3], elementType))
+        for (elementKey of elementKeys) {
+            const elements = fs.readdirSync(path.join(process.argv[3], elementType, elementKey))
+            for (element of elements) {
+                // check if element is directory or file
+                const elementPath = path.join(process.argv[3], elementType, elementKey, element)
+                if (fs.statSync(elementPath).isDirectory()) {
+                    data[elementType].push(YAML.load(fs.readFileSync(path.join(elementPath, `${element}.yaml`), 'utf8')))
+                } else {
+                    data[elementType].push(YAML.load(fs.readFileSync(path.join(elementPath), 'utf8')))
+                }
+                coloredLog(`Loaded ${elementPath}`, "Green")
 
-        if (data.integrations) {
-            warnings.push(...await syncIntegrations(data, workspaceData, iApp))
+            }
         }
-        // Regfetch latest integrations
-        workspaceData.integrations = await iApp.integrations.findAll()
-
-
-        coloredLog(`Syncing Universal Elements`, "BgBlue")
-        console.group()
-        await syncElements(universalElements, workspaceData, iApp)
-        console.groupEnd()
-        
-        coloredLog(`Syncing Integration Specific Elements`, "BgBlue")
-        console.group()
-
-        // Data Sources should be synced first, if passed
-        if (integrationSpecificElements.dataSources) {
-            await syncElements({ dataSources: integrationSpecificElements.dataSources }, workspaceData, iApp)
-            delete integrationSpecificElements.dataSources
-        }
-        
-        await syncElements(integrationSpecificElements, workspaceData, iApp)
-        console.groupEnd()
     }
-  
+
+    const { universalElements, integrationSpecificElements } = splitWorkspaceData(data)
+
+    if (data.integrations) {
+        warnings.push(...await syncIntegrations(data, workspaceData, iApp))
+    }
+    // Regfetch latest integrations
+    workspaceData.integrations = await iApp.integrations.findAll()
+
+
+    coloredLog(`Syncing Universal Elements`, "BgBlue")
+    console.group()
+    await syncElements(universalElements, workspaceData, iApp)
+    console.groupEnd()
+
+    coloredLog(`Syncing Integration Specific Elements`, "BgBlue")
+    console.group()
+
+    // Data Sources should be synced first, if passed
+    if (integrationSpecificElements.dataSources) {
+        await syncElements({ dataSources: integrationSpecificElements.dataSources }, workspaceData, iApp)
+        delete integrationSpecificElements.dataSources
+    }
+
+    await syncElements(integrationSpecificElements, workspaceData, iApp)
+    console.groupEnd()
+
+
     // Display warnings
     coloredLog("Warnings        ", "BgYellow")
     console.group()
     for (warning of warnings) {
-        coloredLog(warning,"Yellow")
+        coloredLog(warning, "Yellow")
     }
     console.groupEnd()
     coloredLog(`Data written successfully.`, "BgGreen");
@@ -57,16 +80,17 @@ async function importPackage() {
 }
 
 async function syncIntegrations(sourceData, destinationData, iApp, warnings = []) {
-    coloredLog("Matching imported integrations with existing ones","BgBlue")
+    coloredLog("Matching imported integrations with existing ones", "BgBlue")
     const integrationMissmatchErrors = []
     for (let integration of sourceData.integrations) {
         const matchedIntegration = destinationData.integrations.some((item) => item.key == integration.key)
         if (!matchedIntegration) {
             // Try to create the integration
             try {
-                newIntegration = await iApp.integrations.create({ connectorId: integration.connectorId })
+                newIntegration = await iApp.integrations.create({ connectorId: integration.connectorId, key: integration.key, name: integration.name })
                 coloredLog(`Created ${integration.key} ${integration.name}`, "Green")
             } catch (error) {
+                console.log(error)
                 // Failed to create, usually because of the connector is custom and not available in the destination workspace
                 integrationMissmatchErrors.push(integration)
             }
@@ -91,7 +115,7 @@ async function syncElements(data, workspaceData, iApp) {
     for (elementType of Object.keys(data)) {
 
         if (INTEGRATION_ELEMENTS[elementType].exportable === false) continue
-        
+
         for (element of data[elementType]) {
 
             // Cleanup 
@@ -100,7 +124,7 @@ async function syncElements(data, workspaceData, iApp) {
             destinationElement = matchElement(element, workspaceData)
 
             if (destinationElement) {
-               
+
                 if (!hasParent(element) || (elementIsCustomized(element) && hasParent(element))) {
                     // Update the element without parent OR the integration-specific element that should be customized 
                     await iApp[INTEGRATION_ELEMENTS[elementType].element](destinationElement.id).put(element)
@@ -123,15 +147,22 @@ async function syncElements(data, workspaceData, iApp) {
                 // Create the element
 
                 if (hasParent(element)) {
-                    
-                    await iApp[INTEGRATION_ELEMENTS[elementType].element]({ key: element.key }).apply([ element.integrationKey ])
+                    try {
+                        await iApp[INTEGRATION_ELEMENTS[elementType].element]({ key: element.key }).apply([element.integrationKey])
+                    } catch (error) {
+                        try {
+                            await iApp[INTEGRATION_ELEMENTS[elementType].element]({ key: element.key, integrationKey: element.integrationKey }).put(element)
+                        } catch (error) {
+                            await iApp[INTEGRATION_ELEMENTS[elementType].elements].create({ ...element, integrationId: workspaceData.integrations.find((item) => item.key == element.integrationKey).id })
+                        }
+                    }
                     if (elementIsCustomized(element)) {
                         try {
-                            await iApp[INTEGRATION_ELEMENTS[elementType].element]({key: element.key, integrationKey: element.integrationKey}).put(element)
+                            await iApp[INTEGRATION_ELEMENTS[elementType].element]({ key: element.key, integrationKey: element.integrationKey }).put(element)
                         } catch (error) {
                             console.log(destinationElement, element)
                             throw error
-                        
+
                         }
                         coloredLog(`Applied & Customized ${element.integrationKey || "universal"} ${INTEGRATION_ELEMENTS[elementType].element} ${element.key}`, "Green")
                     } else {
@@ -146,7 +177,7 @@ async function syncElements(data, workspaceData, iApp) {
                         }
                         await iApp[elementType].create(element)
                     } catch (error) {
-                        console.log(hasParent(element),element.integrationKey, element)
+                        console.log(hasParent(element), element.integrationKey, element)
                         throw error
                     }
                     coloredLog(`Created universal ${INTEGRATION_ELEMENTS[elementType].element} ${element.key}`, "Green")
