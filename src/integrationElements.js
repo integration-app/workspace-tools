@@ -60,7 +60,6 @@ function baseExportCleanup(element) {
     delete element.updatedAt
     delete element.revision
     delete element.parentRevision
-    delete element.parentId
     Object.keys(element).map((key) => {
         if (key.match(/universal.*Revision/g)) {
             delete element[key]
