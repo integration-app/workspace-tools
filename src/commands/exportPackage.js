@@ -8,7 +8,9 @@ const YAML = require('js-yaml');
 async function exportPackage() {
     dotenv.config();
     const token = generateAccessToken(process.env.EXPORT_WORKSPACE_KEY, process.env.EXPORT_WORKSPACE_SECRET)
-    const iApp = new IntegrationAppClient({ token: token })
+    const options = { token }
+    if (process.env.EXPORT_API_URI) options.apiUri = process.env.EXPORT_API_URI
+    const iApp = new IntegrationAppClient(options)
     
     if (!process.argv[3]) {
         process.argv[3] = path.join(__dirname, '../../dist');
