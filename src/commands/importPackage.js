@@ -11,7 +11,9 @@ async function importPackage() {
         process.argv[3] = path.join(__dirname, '../../dist');
     }
     const token = generateAccessToken(process.env.IMPORT_WORKSPACE_KEY, process.env.IMPORT_WORKSPACE_SECRET)
-    const iApp = new IntegrationAppClient({ token: token })
+    const options = { token }
+    if (process.env.IMPORT_API_URI) options.apiUri = process.env.IMPORT_API_URI
+    const iApp = new IntegrationAppClient(options)
 
     const warnings = [] // Collect all warnings and display them at the end
 
