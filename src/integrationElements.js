@@ -10,7 +10,16 @@ const INTEGRATION_ELEMENTS = {
                 name: el.name,
                 connectorId: el.connectorId,
                 baseUri: el.baseUri,
+                connectorVersion: el.connectorVersion,
                 }
+        }
+    },
+    "connectors": {
+        element: "connector",
+        elements: "connectors",
+        exportable: false, 
+        exportCleanup: (el) => {
+            return el
         }
     },
     "actions": {
@@ -53,6 +62,7 @@ const INTEGRATION_ELEMENTS = {
         elements: "flows",
         integrationSpecific: true
     }
+
 }
 function baseExportCleanup(element) {
     delete element.workspaceId

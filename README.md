@@ -10,7 +10,7 @@ This CLI tool allows you to export and import data from Integration Workspaces
 ## Usage
 
 To export run:
-- npm run export {file}
+- npm run export
 
 To import run:
-- npm run import {file}
+- npm run import

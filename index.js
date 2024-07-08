@@ -8,6 +8,7 @@ const { importPackage } = require('./src/commands/importPackage')
 program
     .command('export')
     .description('Export Workspace as a package')
+    .option('-a, --allConnectors', 'Download all custom and store connectors. If not provided, only custom connectors will be downloaded')
     .action(exportPackage)
 
 program
