@@ -27,7 +27,6 @@ async function exportPackage(options) {
         const connectorPath = path.join(outputPath, "connectors", `${connector.name}_${integration.connectorId}`, connectorVersion)
 
 
-        if (!fs.existsSync(path.join(connectorPath)) && (connector.workspaceId || options.allConnectors)) {
             
             const connectorData = await iApp.get(`connectors/${integration.connectorId}/download`, {
                 version: integration.connectorVersion
@@ -39,13 +38,16 @@ async function exportPackage(options) {
                 timeout: 1000000,
             })
             fs.mkdirSync(connectorPath, { recursive: true });
-
-            fs.writeFileSync(path.join(connectorPath, `${connectorVersion}.zip`), connectorData)
-            // TODO: refactor this, when we'll start returning version in connector response
             fs.writeFileSync(path.join(connectorPath, `${connectorVersion}.yaml`), YAML.dump({ ...connector, version: connectorVersion }))
-            coloredLog(`Downloaded ${connectorVersion} version of ${connector.name}`, "Blue")
+            coloredLog(`Get ${connector.name}`, "Blue")
 
-        }
+
+            if ((!fs.existsSync(path.join(connectorPath))) && (connector.workspaceId || options.allConnectors)) {
+                fs.writeFileSync(path.join(connectorPath, `${connectorVersion}.zip`), connectorData)
+                coloredLog(`Downloaded ${connectorVersion} version of ${connector.name}`, "Blue")
+
+            }
+            // TODO: refactor this, when we'll start returning version in connector response
     }
 
 

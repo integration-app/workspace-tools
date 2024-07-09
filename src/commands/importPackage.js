@@ -96,7 +96,7 @@ async function syncIntegrations(sourceData, destinationData, iApp, warnings = []
 
     const connectorFromStore = await iApp.get("connectors")
     const sourceConnectors = {}
-
+    sourceData.connectors = sourceData.connectors ?? []
     for (connector of sourceData.connectors) {
         if (!sourceConnectors[connector.id]) { sourceConnectors[connector.id] = {} }
         sourceConnectors[connector.id][connector.version] = connector
