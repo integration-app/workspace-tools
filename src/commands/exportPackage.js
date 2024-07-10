@@ -42,7 +42,7 @@ async function exportPackage(options) {
             coloredLog(`Get ${connector.name}`, "Blue")
 
 
-            if ((!fs.existsSync(path.join(connectorPath))) && (connector.workspaceId || options.allConnectors)) {
+        if ((!fs.existsSync(path.join(connectorPath, `${connectorVersion}.zip`))) && (connector.workspaceId || options.allConnectors)) {
                 fs.writeFileSync(path.join(connectorPath, `${connectorVersion}.zip`), connectorData)
                 coloredLog(`Downloaded ${connectorVersion} version of ${connector.name}`, "Blue")
 
