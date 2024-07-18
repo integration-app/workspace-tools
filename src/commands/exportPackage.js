@@ -26,23 +26,23 @@ async function exportPackage(options) {
 
         const connectorPath = path.join(outputPath, "connectors", `${connector.name}_${integration.connectorId}`, connectorVersion)
 
-
-            
-            const connectorData = await iApp.get(`connectors/${integration.connectorId}/download`, {
-                version: integration.connectorVersion
-            }, {
-                responseType: "arraybuffer",
-                headers: {
-                    "Accept": "application/zip"
-                },
-                timeout: 1000000,
-            })
-            fs.mkdirSync(connectorPath, { recursive: true });
-            fs.writeFileSync(path.join(connectorPath, `${connectorVersion}.yaml`), YAML.dump({ ...connector, version: connectorVersion }))
-            coloredLog(`Get ${connector.name}`, "Blue")
+   
+        fs.mkdirSync(connectorPath, { recursive: true });
+        fs.writeFileSync(path.join(connectorPath, `${connectorVersion}.yaml`), YAML.dump({ ...connector, version: connectorVersion }))
+        coloredLog(`Get ${connector.name}`, "Blue")
 
 
         if ((!fs.existsSync(path.join(connectorPath, `${connectorVersion}.zip`))) && (connector.workspaceId || options.allConnectors)) {
+                const connectorData = await iApp.get(`connectors/${integration.connectorId}/download`, {
+                    version: integration.connectorVersion
+                }, {
+                    responseType: "arraybuffer",
+                    headers: {
+                        "Accept": "application/zip"
+                    },
+                    timeout: 1000000,
+                })
+
                 fs.writeFileSync(path.join(connectorPath, `${connectorVersion}.zip`), connectorData)
                 coloredLog(`Downloaded ${connectorVersion} version of ${connector.name}`, "Blue")
 
