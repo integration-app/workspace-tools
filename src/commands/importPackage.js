@@ -200,10 +200,13 @@ async function syncIntegrations(sourceData, destinationData, iApp, warnings = []
                 const targetConnectorId = connectorsMapping[integration.connectorId]
                 const targetConnectorVersion = integration.connectorVersion
                 console.log(`Switching integration ${integration.key} to version ${integration.connectorVersion} of connector ${targetConnectorId}`)
-                await iApp.patch(`integrations/${matchedIntegration.id}`, { 
-                    connectorId: targetConnectorId,
+                const payload = { 
                     connectorVersion: targetConnectorVersion
-                })
+                }
+                if (matchedIntegration.connectorId != targetConnectorId) {
+                    payload.connectorId = targetConnectorId
+                }
+                await iApp.patch(`integrations/${matchedIntegration.id}`, payload)
             } else {
                 coloredLog(`Matched ${integration.key} ${integration.name}`, "Blue")
             }
