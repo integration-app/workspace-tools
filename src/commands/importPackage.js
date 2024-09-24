@@ -157,7 +157,7 @@ async function syncIntegrations(sourceData, destinationData, iApp, warnings = []
 
                 } else { 
                     console.log(`Uploading connector ${connectorIdToUpload}`)
-                    await iApp.post(`connectors/${connectroIdToUpload}/upload`, formData, {
+                    await iApp.post(`connectors/${connectorIdToUpload}/upload`, formData, {
                         headers: {
                             ...formData.getHeaders()
                         }
