@@ -121,10 +121,15 @@ async function syncIntegrations(sourceData, destinationData, iApp, warnings = []
                 // coloredLog(`Matched ${connector.name} ${connector.appUuid}`, "Blue")
             } else {
                 delete connector.baseUri
+
                 if (connector.uuid && destinationData.connectors?.find((item) => item.uuid == connector.uuid)) {
                     connectorsMapping[connector.id] = destinationData.connectors.find((item) => item.uuid == connector.uuid).id
                     coloredLog(`Matched ${connector.name} uuid: ${connector.uuid}`, "Blue")
                 } else if (!connectorsMapping[connector.id]) {
+                    console.log(`Creating connector ${connector.name} (${connector.key})`)
+                    // Temporary: until we fix bug with uploading logoUri
+                    // https://github.com/integration-app/core/pull/3841
+                    delete connector.logoUri
                     const resp = await iApp.post("connectors", {
                         ...connector,
                         workspaceId: process.env.IMPORT_WORKSPACE_ID
@@ -142,34 +147,36 @@ async function syncIntegrations(sourceData, destinationData, iApp, warnings = []
                     filename: `file.zip`, // Provide the filename option
                     contentType: 'application/zip' // Provide the content type
                 });
+
+                const connectorIdToUpload = connectorsMapping[connector.id]
                 
                 if (version != "development") {
                     formData.append('version', version);
                     formData.append('changelog', "Imported Version");
 
                     // Check if version is already published
-                    const versions = await iApp.get(`/connectors/${connectorsMapping[connector.id]}/versions`)
+                    const versions = await iApp.get(`/connectors/${connectorIdToUpload}/versions`)
                     if (versions.find((item) => item.version == version)) {
                         coloredLog(`Version ${version} already published`, "Blue")
                         continue
                     }
-                    await iApp.post(`connectors/${connectorsMapping[connector.id]}/publish-version`, formData, {
+                    console.log(`Publishing version ${version} of connector ${connectorIdToUpload}`)
+                    await iApp.post(`connectors/${connectorIdToUpload}/publish-version`, formData, {
                         headers: {
                             ...formData.getHeaders()
                         }
                     });
-                   coloredLog(`Published ${connector.name} ${version}`, "Blue")
 
                 } else { 
-                    await iApp.post(`connectors/${connectorsMapping[connector.id]}/upload`, formData, {
+                    console.log(`Uploading connector ${connectorIdToUpload}`)
+                    await iApp.post(`connectors/${connectorIdToUpload}/upload`, formData, {
                         headers: {
                             ...formData.getHeaders()
                         }
                     });
-                    coloredLog(`Uploaded ${connector.name} ${version}`, "Blue")
-
                 }
 
+                coloredLog(`Imported connector ${connector.key}@${version}`, "Green")
             }
 
         }
@@ -191,10 +198,9 @@ async function syncIntegrations(sourceData, destinationData, iApp, warnings = []
                     const integrationResp = await iApp.integrations.create({ connectorId: connectorsMapping[integration.connectorId], key: integration.key, name: integration.name })
                     const versionId = versions.find((item) => item.version == integration.connectorVersion)?.id
                     if (versionId) {
+                        console.log(`Switching integration ${integrationResp.key} to version ${versionId} of connector ${connectorsMapping[integration.connectorId]}`)
                         await iApp.post(`integrations/${integrationResp.id}/switch-connector-version`, { connectorVersionId: versionId })
                     }
-
-                coloredLog(`Created ${integration.key} ${integration.name}`, "Green")
             } catch (error) {
                 console.log(error)
                 // Failed to create, usually because of the connector is custom and not available in the destination workspace
@@ -203,13 +209,22 @@ async function syncIntegrations(sourceData, destinationData, iApp, warnings = []
             }
         } else {
             if (integration.connectorVersion && (integration.connectorVersion != matchedIntegration.connectorVersion)) {
-                await iApp.post(`integrations/${matchedIntegration.id}/switch-connector-version`, { connectorVersionId: versions.find((item) => item.version == integration.connectorVersion).id })
-                coloredLog(`Switched to correct version ${integration.key} ${integration.name}`, "Blue")
-
+                const targetConnectorId = connectorsMapping[integration.connectorId]
+                const targetConnectorVersion = integration.connectorVersion
+                console.log(`Switching integration ${integration.key} to version ${integration.connectorVersion} of connector ${targetConnectorId}`)
+                const payload = { 
+                    connectorVersion: targetConnectorVersion
+                }
+                if (matchedIntegration.connectorId != targetConnectorId) {
+                    payload.connectorId = targetConnectorId
+                }
+                await iApp.patch(`integrations/${matchedIntegration.id}`, payload)
             } else {
                 coloredLog(`Matched ${integration.key} ${integration.name}`, "Blue")
             }
         }
+
+        coloredLog(`Imported integration ${integration.name} (${integration.key} )`, "Green")
 
     }
     if (integrationMissmatchErrors.length > 0) {

@@ -18,32 +18,20 @@ This CLI tool allows you to export and import data from Integration.app Workspac
 ## Installation
 
 1. Install dependencies:
+
    ```
    npm install
    ```
 
 2. Configure environment variables:
-   Create a `.env` file in the root directory with the following content:
-   ```
-   EXPORT_WORKSPACE_KEY=your_export_workspace_key
-   EXPORT_WORKSPACE_SECRET=your_export_workspace_secret
-
-   IMPORT_WORKSPACE_KEY=your_import_workspace_key
-   IMPORT_WORKSPACE_SECRET=your_import_workspace_secret
-   IMPORT_WORKSPACE_ID=your_import_workspace_id
-   
-   EXPORT_API_URI=https://api.integration.app (optional)
-   IMPORT_API_URI=https://api.integration.app (optional)
-   
-   ```
+   Copy `.env-sample` file to `.env` and populate it with correct values. in the root directory with the following content:
 
 ## Usage
 
 ### Command-Line Interface
 
-
 ```
-npm run export 
+npm run export
 npm run exportOnprem // This will download all connectors, even one that exists in our Store
 npm run import
 ```
@@ -65,6 +53,7 @@ npm run exportOnprem
 ```
 
 During the export process:
+
 - Custom connectors are downloaded and saved as ZIP files.
 - Integration data, including connector versions, is captured.
 - Universal and integration-specific elements are exported.
@@ -80,6 +69,7 @@ npm run import
 This command will import the data from the `dist` directory into the workspace specified by the `IMPORT_WORKSPACE_KEY`, `IMPORT_WORKSPACE_SECRET`, and `IMPORT_WORKSPACE_ID`.
 
 During the import process:
+
 - Connectors are matched or created in the destination workspace.
 - Integrations are created or updated, including switching to the correct connector version if necessary.
 - Universal and integration-specific elements are synced, with proper handling of customizations and resets.
@@ -144,6 +134,7 @@ If you encounter any issues:
 Contributions to improve the tool are welcome. Please submit issues and pull requests on the project's GitHub repository.
 
 When contributing, please note:
+
 - The code uses the `@integration-app/sdk` for interacting with the Integration.app API.
 - Utility functions are available in `src/util.js` for common operations like generating access tokens and color-coded logging.
 - Element type definitions and cleanup functions are defined in `src/integrationElements.js`.
