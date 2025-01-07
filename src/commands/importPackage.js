@@ -94,6 +94,10 @@ async function importPackage() {
 async function syncIntegrations(sourceData, destinationData, iApp, warnings = []) {
     coloredLog("Matching imported integrations and connectors with existing ones", "BgBlue")
 
+    // Get Connectors
+    const connectors = await iApp.get(`/connectors?workspaceId=${process.env.IMPORT_WORKSPACE_ID}`)
+    destinationData.connectors = connectors
+
     const connectorFromStore = await iApp.get("connectors")
     const sourceConnectors = {}
     sourceData.connectors = sourceData.connectors ?? []
@@ -101,7 +105,6 @@ async function syncIntegrations(sourceData, destinationData, iApp, warnings = []
         if (!sourceConnectors[connector.id]) { sourceConnectors[connector.id] = {} }
         sourceConnectors[connector.id][connector.version] = connector
     }
-    
     const connectorsMapping = {}
     for (connectorKey of Object.keys(sourceConnectors)) {
         const versions = Object.keys(sourceConnectors[connectorKey]).sort()
@@ -118,13 +121,15 @@ async function syncIntegrations(sourceData, destinationData, iApp, warnings = []
                 // coloredLog(`Matched ${connector.name} ${connector.appUuid}`, "Blue")
             } else {
                 delete connector.baseUri
-                if (!connectorsMapping[connector.id]) {
-                    console.log(`Creating connector ${connector.name} (${connector.key})`)
 
+                if (connector.uuid && destinationData.connectors?.find((item) => item.uuid == connector.uuid)) {
+                    connectorsMapping[connector.id] = destinationData.connectors.find((item) => item.uuid == connector.uuid).id
+                    coloredLog(`Matched ${connector.name} uuid: ${connector.uuid}`, "Blue")
+                } else if (!connectorsMapping[connector.id]) {
+                    console.log(`Creating connector ${connector.name} (${connector.key})`)
                     // Temporary: until we fix bug with uploading logoUri
                     // https://github.com/integration-app/core/pull/3841
                     delete connector.logoUri
-
                     const resp = await iApp.post("connectors", {
                         ...connector,
                         workspaceId: process.env.IMPORT_WORKSPACE_ID
@@ -144,10 +149,17 @@ async function syncIntegrations(sourceData, destinationData, iApp, warnings = []
                 });
 
                 const connectorIdToUpload = connectorsMapping[connector.id]
+                
                 if (version != "development") {
                     formData.append('version', version);
                     formData.append('changelog', "Imported Version");
 
+                    // Check if version is already published
+                    const versions = await iApp.get(`/connectors/${connectorIdToUpload}/versions`)
+                    if (versions.find((item) => item.version == version)) {
+                        coloredLog(`Version ${version} already published`, "Blue")
+                        continue
+                    }
                     console.log(`Publishing version ${version} of connector ${connectorIdToUpload}`)
                     await iApp.post(`connectors/${connectorIdToUpload}/publish-version`, formData, {
                         headers: {
