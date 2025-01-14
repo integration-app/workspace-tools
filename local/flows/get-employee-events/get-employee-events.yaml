@@ -1,0 +1,78 @@
+key: get-employee-events
+id: 66991cba042f64915c234852
+name: Get employee Events
+nodes:
+  data-record-created-trigger:
+    type: data-record-created-trigger
+    name: Data Record Created Trigger
+    config:
+      dataSource:
+        key: employees
+    links:
+      - key: find-data-record-by-id
+  data-record-updated-trigger:
+    type: data-record-updated-trigger
+    name: Data Record Updated Trigger
+    config:
+      dataSource:
+        key: employees
+    links:
+      - key: find-data-record-by-id
+  data-record-deleted-trigger:
+    type: data-record-deleted-trigger
+    name: Data Record Deleted Trigger
+    config:
+      dataSource:
+        key: employees
+    links:
+      - key: api-request-to-your-app
+  api-request-to-your-app:
+    type: api-request-to-your-app
+    name: Delete employee in My App
+    config:
+      request:
+        body:
+          id:
+            $var: $.input.data-record-deleted-trigger.record.id
+    links: []
+  find-data-record-by-id:
+    type: find-data-record-by-id
+    name: Find Data Record By Id
+    config:
+      dataSource:
+        key: employees
+      fieldMapping:
+        key: employees
+      id:
+        $firstNotEmpty:
+          - $var: $.input.data-record-created-trigger.record.id
+          - $var: $.input.data-record-updated-trigger.record.id
+    links:
+      - key: api-request-to-your-app-1
+  api-request-to-your-app-1:
+    type: api-request-to-your-app
+    name: Send employee event to My App
+    config:
+      request:
+        body:
+          id:
+            $var: $.input.find-data-record-by-id.id
+          fields:
+            $var: $.input.find-data-record-by-id.fields
+          eventType:
+            $case:
+              cases:
+                - filter:
+                    $eval:
+                      $var: $.input.data-record-created-trigger
+                    isNotEmpty: null
+                  value: created
+                - filter:
+                    $eval:
+                      $var: $.input.data-record-updated-trigger
+                    isNotEmpty: null
+                  value: updated
+    links: []
+autoCreateInstances: false
+customized: false
+isDeployed: false

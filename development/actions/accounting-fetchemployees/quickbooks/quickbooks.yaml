@@ -1,0 +1,16 @@
+isCustomized: true
+parentId: 66991cb8ec0742c929358981
+integrationId: 66991ca4ec0742c92935885a
+key: accounting-fetchemployees
+id: 66991cbe9aca0c293af5bd19
+name: 'Accounting: Fetch Employees (Development)'
+archivedAt: null
+type: list-data-records
+config:
+  dataSource:
+    collectionKey: employees
+  fieldMapping:
+    key: employees
+isDeployed: true
+configurationState: CONFIGURED
+integrationKey: quickbooks

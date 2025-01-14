@@ -6,3 +6,6 @@ dist/
 
 # Ignore local .env file
 .env
+
+# Ignore directories
+dist/

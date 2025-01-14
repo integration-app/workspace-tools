@@ -1,0 +1,534 @@
+name: Freshbooks
+logoUri: https://static.integration.app/connectors/freshbooks-connector/logo.png
+connectionMode: popup
+key: freshbooks
+parametersSchema:
+  type: object
+  properties:
+    clientId:
+      type: string
+    clientSecret:
+      type: string
+    scopes:
+      type: array
+      items:
+        type: string
+        enum:
+          - user:account:read
+          - user:bill_payments:read
+          - user:bill_payments:write
+          - user:bill_vendors:read
+          - user:bill_vendors:write
+          - user:billable_items:read
+          - user:billable_items:write
+          - user:bills:read
+          - user:bills:write
+          - user:business:read
+          - user:clients:read
+          - user:clients:write
+          - user:credit_notes:read
+          - user:credit_notes:write
+          - user:estimates:read
+          - user:estimates:write
+          - user:expenses:read
+          - user:expenses:write
+          - user:invoices:read
+          - user:invoices:write
+          - user:journal_entries:read
+          - user:journal_entries:write
+          - user:notifications:read
+          - user:online_payments:read
+          - user:online_payments:write
+          - user:other_income:read
+          - user:other_income:write
+          - user:payments:read
+          - user:payments:write
+          - user:profile:read
+          - user:projects:read
+          - user:projects:write
+          - user:reports:read
+          - user:retainers:read
+          - user:retainers:write
+          - user:taxes:read
+          - user:taxes:write
+          - user:teams:read
+          - user:teams:write
+          - user:time_entries:read
+          - user:time_entries:write
+          - user:uploads:read
+          - user:uploads:write
+      default:
+        - user:account:read
+        - user:bill_payments:read
+        - user:bill_payments:write
+        - user:bill_vendors:read
+        - user:bill_vendors:write
+        - user:billable_items:read
+        - user:billable_items:write
+        - user:bills:read
+        - user:bills:write
+        - user:business:read
+        - user:clients:read
+        - user:clients:write
+        - user:credit_notes:read
+        - user:credit_notes:write
+        - user:estimates:read
+        - user:estimates:write
+        - user:expenses:read
+        - user:expenses:write
+        - user:invoices:read
+        - user:invoices:write
+        - user:journal_entries:read
+        - user:journal_entries:write
+        - user:notifications:read
+        - user:online_payments:read
+        - user:online_payments:write
+        - user:other_income:read
+        - user:other_income:write
+        - user:payments:read
+        - user:payments:write
+        - user:profile:read
+        - user:projects:read
+        - user:projects:write
+        - user:reports:read
+        - user:retainers:read
+        - user:retainers:write
+        - user:taxes:read
+        - user:taxes:write
+        - user:teams:read
+        - user:teams:write
+        - user:time_entries:read
+        - user:time_entries:write
+        - user:uploads:read
+        - user:uploads:write
+api:
+  type: openapi
+apiDocsUri: https://www.freshbooks.com/api/start
+auth:
+  type: oauth2
+  credentialsSchema:
+    type: object
+    properties:
+      access_token:
+        type: string
+        title: Access Token
+        description: Access token to use for API calls
+      refresh_token:
+        type: string
+        title: Refresh Token
+        description: Refresh token to use for API calls
+  getOAuthConfig:
+    implementationType: mapping
+    filePath: auth/oauth-config.yml
+  makeApiClient:
+    implementationType: mapping
+    filePath: auth/make-api-client.yml
+  test:
+    implementationType: operation-mapping
+    filePath: auth/test.op.yml
+udm:
+  customers:
+    collectionMappings:
+      - key: clients
+        fieldsFromCollection:
+          id:
+            $var: id
+          firstName:
+            $var: fname
+          lastName:
+            $var: lname
+          companyName:
+            $var: organization
+          status:
+            $var: $.vis_state
+          currency:
+            $var: currency_code
+          phones:
+            - value:
+                $var: bus_phone
+              type: business
+            - value:
+                $var: home_phone
+              type: home
+            - value:
+                $var: mob_phone
+              type: mobile
+          emails:
+            - value:
+                $var: email
+              type: primary
+          notes:
+            $var: note
+          tax_number:
+            $var: vat_number
+          updatedTime:
+            $var: updated
+        fieldsToCollection:
+          id:
+            $var: id
+          company_industry:
+            $var: description
+          currency_code:
+            $var: currency
+          email:
+            $var: emails[0].value
+          fname:
+            $var: firstName
+          lname:
+            $var: lastName
+          note:
+            $var: notes
+          organization:
+            $var: companyName
+          vat_number:
+            $var: tax_number
+          vis_state:
+            $var: status
+          bus_phone:
+            $var: phones[0].value
+          home_phone:
+            $var: phones[1].value
+          mob_phone:
+            $var: phones[2].value
+          updated:
+            $var: updatedTime
+    defaultCollection:
+      key: clients
+      parameters: null
+  invoices:
+    collectionMappings:
+      - key: invoices
+        fieldsFromCollection:
+          id:
+            $var: id
+          number:
+            $var: invoice_number
+          name:
+            $var: organization
+          memo:
+            $var: notes
+          status:
+            $var: display_status
+          paymentMethod:
+            $var: payment_status
+          customerId:
+            $var: customerid
+          currency:
+            $var: currency_code
+          totalAmount:
+            $var: amount.amount
+          totalDiscount:
+            $var: discount_total.amount
+          subTotal:
+            $var: paid.amount
+          balance:
+            $var: outstanding.amount
+          ledgerAccountId:
+            $var: accountid
+          issueDate:
+            $var: create_date
+          dueDate:
+            $var: due_date
+          paidOnDate:
+            $var: date_paid
+          createdTime:
+            $var: created_at
+          updatedTime:
+            $var: updated
+        fieldsToCollection:
+          id:
+            $var: id
+          amount:
+            amount:
+              $var: totalAmount
+            code:
+              $var: currency
+          customerid:
+            $var: customerId
+          description:
+            $var: memo
+          discount_total:
+            amount:
+              $var: totalDiscount
+            code:
+              $var: currency
+          due_date:
+            $var: dueDate
+          invoice_number:
+            $var: number
+          outstanding:
+            amount:
+              $var: balance
+            code:
+              $var: currency
+    defaultCollection:
+      key: invoices
+      parameters: null
+  payments:
+    collectionMappings:
+      - key: payments
+        fieldsFromCollection:
+          id:
+            $var: id
+          type:
+            $var: type
+          notes:
+            $var: note
+          currency:
+            $var: amount.code
+          totalAmount:
+            $var: amount.amount
+          customerId:
+            $var: clientid
+          transactionDate:
+            $var: date
+          updatedTime:
+            $var: updated
+        fieldsToCollection:
+          id:
+            $var: id
+          updated:
+            $var: updatedTime
+          amount:
+            amount:
+              $var: totalAmount
+            code:
+              $var: currency
+          note:
+            $var: notes
+          date:
+            $var: transactionDate
+          type:
+            $var: type
+          clientid:
+            $var: customerId
+    defaultCollection:
+      key: payments
+      parameters: null
+  companies:
+    collectionMappings:
+      - key: businesses
+        fieldsFromCollection:
+          id:
+            $var: id
+          name:
+            $var: name
+          phones:
+            - value:
+                $var: $.phone_number.phone_number
+          primaryPhone:
+            $var: phone_number.phone_number
+          primaryAddress:
+            street:
+              $var: $.address.street
+            city:
+              $var: $.address.city
+            state:
+              $var: $.address.province
+            country:
+              $var: $.address.country
+            zip:
+              $var: $.address.postal_code
+          addresses:
+            - street:
+                $var: $.address.street
+              city:
+                $var: $.address.city
+              state:
+                $var: $.address.province
+              country:
+                $var: $.address.country
+              zip:
+                $var: $.address.postal_code
+          industry:
+            $var: industry
+        fieldsToCollection:
+          id:
+            $var: id
+          name:
+            $var: name
+          industry:
+            $var: industry
+          address:
+            street:
+              $var: primaryAddress.street
+            city:
+              $var: primaryAddress.city
+            province:
+              $var: primaryAddress.state
+            country:
+              $var: primaryAddress.country
+            postal_code:
+              $var: primaryAddress.zip
+          phone_number:
+            phone_number:
+              $var: primaryPhone
+    defaultCollection:
+      key: businesses
+  projects:
+    collectionMappings:
+      - key: projects
+        fieldsToCollection:
+          title:
+            $var: $.name
+          project_type:
+            $var: $.type
+          due_date:
+            $var: $.dueTime
+          description:
+            $var: $.description
+          updated_at:
+            $var: $.updatedTime
+          created_at:
+            $var: $.createdTime
+          id:
+            $var: $.id
+        fieldsFromCollection:
+          id:
+            $var: $.id
+          name:
+            $var: $.title
+          description:
+            $var: $.description
+          type:
+            $var: $.project_type
+          dueTime:
+            $var: $.due_date
+          createdTime:
+            $var: $.created_at
+          updatedTime:
+            $var: $.updated_at
+  journal-entries:
+    collectionMappings:
+      - key: journal-entries
+        fieldsFromCollection:
+          id:
+            $var: $.id
+          title:
+            $var: $.name
+          memo:
+            $var: $.description
+          currency:
+            $var: $.currency_code
+          transactionDate:
+            $var: $.user_entered_date
+        fieldsToCollection:
+          description:
+            $var: $.memo
+          id:
+            $var: $.id
+          name:
+            $var: $.title
+          user_entered_date:
+            $var: $.transactionDate
+          currency_code:
+            $var: $.currency
+  credit-notes:
+    collectionMappings:
+      - key: credit-notes
+        fieldsFromCollection:
+          id:
+            $var: $.id
+          number:
+            $var: $.credit_number
+          memo:
+            $var: $.notes
+          customerId:
+            $var: $.clientid
+          currency:
+            $var: $.currency_code
+          lineItems:
+            $iterate:
+              source:
+                $var: $.lines
+              item:
+                id:
+                  $var: $.item.credit_note
+                itemName:
+                  $var: $.item.name
+                description:
+                  $var: $.item.description
+                quantity:
+                  $var: $.item.qty
+                taxRate:
+                  $var: $.item.taxName1
+                unitPrice:
+                  $var: $.item.unit_cost.amount
+        fieldsToCollection:
+          id:
+            $var: $.id
+          credit_number:
+            $var: $.number
+          currency_code:
+            $var: $.currency
+          create_date:
+            $var: $.issueDate
+          notes:
+            $var: $.memo
+          lines:
+            $iterate:
+              source:
+                $var: $.lineItems
+              item:
+                name:
+                  $var: $.item.itemName
+                description:
+                  $var: $.item.description
+                taxName1:
+                  $var: $.item.taxRate
+                qty:
+                  $var: $.item.quantity
+                unit_cost:
+                  amount:
+                    $var: $.item.unitPrice
+          clientid:
+            $var: $.customerId
+  tax-rates:
+    collectionMappings:
+      - key: taxes
+        fieldsFromCollection:
+          id:
+            $var: $.id
+          name:
+            $var: $.name
+          code:
+            $var: $.number
+          updatedTime:
+            $var: $.updated
+          totalTaxRate:
+            $var: $.amount
+        fieldsToCollection:
+          updated:
+            $var: $.updatedTime
+          name:
+            $var: $.name
+          number:
+            $var: $.code
+          amount:
+            $var: $.totalTaxRate
+          id:
+            $var: $.id
+id: 643e84dcbadd839bce47c653
+uuid: 9ea16f44-92ca-4286-b299-7b918c6594a5
+baseUri: s3://integration-app-connectors/public/b2f84705-8dee-4e8c-8d68-b68d9d64168c
+revision: 00e6473d-6b87-4b81-ad0c-a3df8bb08859
+hasReadme: false
+status: production
+categories:
+  - Accounting
+udms:
+  - customers
+  - invoices
+  - payments
+  - companies
+  - projects
+  - journal-entries
+  - credit-notes
+  - tax-rates
+isReadOnly: true
+popularity: 91
+appUuid: cb8f48d8-ce8f-4a50-b703-73c057196ce4
+dataCollectionsCount: 15
+operationsCount: 161
+eventsCount: 0
+version: development

@@ -1,0 +1,23 @@
+isCustomized: true
+parentId: 66991cb9ec0742c92935898f
+integrationId: 66991c9ea3a91449804073c7
+key: humanresources-fetchcontractors
+id: 66991cc2ec0742c929358a1b
+name: 'Human Resources: Fetch Contractors (Development)'
+archivedAt: null
+type: list-data-records
+inputSchema:
+  type: object
+  properties:
+    companyId:
+      type: string
+config:
+  dataSource:
+    collectionKey: contractors
+    collectionParameters:
+      company_id:
+        $var: $.input.companyId
+isDeployed: true
+configurationState: NOT_CONFIGURED
+configurationStateMessage: Missing fields configuration.
+integrationKey: gusto

@@ -1,0 +1,12 @@
+isCustomized: true
+key: business-information-registered-name
+id: 677d10b4ffe897a736258ce1
+name: 'Bussiness Information: Registered Name'
+type: find-data-record-by-id
+config:
+  fieldMapping:
+    defaultUnifiedValue:
+      $var: $
+  dataSource:
+    key: companies
+isDeployed: true

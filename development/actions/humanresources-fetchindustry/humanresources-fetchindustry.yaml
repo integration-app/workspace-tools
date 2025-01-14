@@ -1,0 +1,12 @@
+isCustomized: true
+key: humanresources-fetchindustry
+id: 66991cb99aca0c293af5bc8c
+name: 'Human Resources: Fetch Industry'
+type: api-request-to-external-app
+inputSchema:
+  type: object
+  properties: {}
+config:
+  request:
+    method: GET
+isDeployed: true

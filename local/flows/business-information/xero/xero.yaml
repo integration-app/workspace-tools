@@ -1,0 +1,105 @@
+key: business-information
+id: 677d09745d969d46470142de
+name: Business Information
+archivedAt: null
+universalFlowId: 677d09501b15c38fe97fa00f
+integrationId: 66991cb7ec0742c929358972
+integration:
+  key: xero
+  state: READY
+  errors: []
+  isDeactivated: false
+  id: 66991cb7ec0742c929358972
+  name: Xero
+  uuid: 2de35378-f2f0-4162-87dd-4a4f96e123a7
+  connectorId: 642c613b986ed1caad98172b
+  hasDefaultParameters: false
+  hasMissingParameters: false
+  hasDocumentation: false
+  hasOperations: true
+  hasData: true
+  hasEvents: false
+  hasGlobalWebhooks: false
+  hasUdm: true
+  baseUri: s3://integration-app-connectors/public/d475f280-d078-4054-94d4-03a5a1a63011
+  connectorVersion: 1.0.0
+  logoUri: https://static.integration.app/connectors/xero-connector/logo.png
+  dataCollectionsCount: 15
+  operationsCount: 234
+  eventsCount: 0
+  authType: oauth2
+nodes:
+  api-trigger:
+    type: api-trigger
+    name: API Trigger
+    links:
+      - key: extract-registered-name
+        filter:
+          $and: []
+      - key: business-address
+      - key: mailing-address
+      - key: primary-contact
+      - key: industry
+  transform-data:
+    type: transform-data
+    name: Transform Data
+    config:
+      output:
+        registeredName:
+          $var: $.input.extract-registered-name
+        businessAddress:
+          $var: $.input.business-address
+        mailingAddress:
+          $var: $.input.mailing-address
+        primaryContactNumber:
+          $var: $.input.primary-contact
+        industry:
+          $var: $.input.industry
+      code: console.log()
+    links: []
+  extract-registered-name:
+    type: run-action
+    name: Extract Registered Name
+    config:
+      action:
+        key: business-information-registered-name
+    links:
+      - key: transform-data
+        name: ''
+  mailing-address:
+    type: run-action
+    name: Mailing Address
+    config:
+      action:
+        key: business-information-mailing-address
+    links:
+      - key: transform-data
+  primary-contact:
+    type: run-action
+    name: Primary Contact
+    config:
+      action:
+        key: business-information-primary-contact-number
+    links:
+      - key: transform-data
+  industry:
+    type: run-action
+    name: Industry
+    config:
+      action:
+        key: business-information-industry
+    links:
+      - key: transform-data
+  business-address:
+    type: run-action
+    name: Business Address
+    config:
+      action:
+        key: business-information-business-address
+    links:
+      - key: transform-data
+autoCreateInstances: false
+customized: false
+isDeployed: true
+configurationState: CONFIGURED
+integrationKey: xero

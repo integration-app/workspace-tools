@@ -1,0 +1,29 @@
+isCustomized: true
+parentId: 677ea40866bb414cfbd5f0bc
+integrationId: 66991c9bf4e2d58d0affcc17
+key: business-information-business-address
+id: 677ea40866bb414cfbd5f0c1
+name: 'Bussiness Information: Business Address Freshbooks'
+type: list-data-records
+config:
+  dataSource:
+    key: companies
+  fieldMapping: {}
+outputMapping:
+  street:
+    $concat:
+      values:
+        - $var: $.output.records[0].fields.address.street
+        - $var: $.output.records[0].fields.address.street2
+  city:
+    $var: $.output.records[0].fields.address.city
+  state:
+    $var: $.output.records[0].fields.address.province
+  postalCode:
+    $var: $.output.records[0].fields.address.postal_code
+  country:
+    $var: $.output.records[0].fields.address.country
+isDeployed: true
+configurationState: NOT_CONFIGURED
+configurationStateMessage: Missing fields configuration.
+integrationKey: freshbooks

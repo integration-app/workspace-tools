@@ -1,0 +1,28 @@
+isCustomized: true
+parentId: 66991cb8ec0742c929358981
+integrationId: 66991c9bf4e2d58d0affcc17
+key: accounting-fetchemployees
+id: 66991cbeec0742c9293589db
+name: 'Accounting: Fetch Employees (Development)'
+archivedAt: null
+type: list-data-records
+inputSchema:
+  type: object
+  properties:
+    businessId:
+      type: string
+    accountId:
+      type: string
+config:
+  dataSource:
+    collectionKey: clients
+    collectionParameters:
+      businessId:
+        $var: $.input.businessId
+      accountId:
+        $var: $.input.accountId
+  fieldMapping:
+    key: employees
+isDeployed: false
+configurationState: CONFIGURED
+integrationKey: freshbooks

@@ -1,0 +1,33 @@
+key: business-information
+isDeactivated: false
+id: 677e50fab4dd76aab8ba03cc
+name: Business Information
+archivedAt: null
+integrationId: 66991cb7ec0742c929358972
+customized: false
+universalDataSourceId: 677be2652102e3b746a5b53e
+integration:
+  key: xero
+  state: READY
+  errors: []
+  isDeactivated: false
+  id: 66991cb7ec0742c929358972
+  name: Xero
+  uuid: 2de35378-f2f0-4162-87dd-4a4f96e123a7
+  connectorId: 642c613b986ed1caad98172b
+  hasDefaultParameters: false
+  hasMissingParameters: false
+  hasDocumentation: false
+  hasOperations: true
+  hasData: true
+  hasEvents: false
+  hasGlobalWebhooks: false
+  hasUdm: true
+  baseUri: s3://integration-app-connectors/public/d475f280-d078-4054-94d4-03a5a1a63011
+  connectorVersion: 1.0.0
+  logoUri: https://static.integration.app/connectors/xero-connector/logo.png
+  dataCollectionsCount: 15
+  operationsCount: 234
+  eventsCount: 0
+  authType: oauth2
+integrationKey: xero

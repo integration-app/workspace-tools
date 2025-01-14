@@ -1,0 +1,12 @@
+isCustomized: false
+key: files-get-file
+id: 6752fe6b190c6705e474ef87
+name: 'Files: Get File'
+type: find-data-record-by-id
+config:
+  fieldMapping:
+    defaultUnifiedValue:
+      $var: $
+  dataSource:
+    udm: files
+isDeployed: false

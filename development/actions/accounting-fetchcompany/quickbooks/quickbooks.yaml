@@ -1,0 +1,18 @@
+isCustomized: true
+parentId: 66991cb8f4e2d58d0affcd6e
+integrationId: 66991ca4ec0742c92935885a
+key: accounting-fetchcompany
+id: 66991cbd042f64915c2348a7
+name: 'Accounting: Fetch Company'
+archivedAt: null
+type: list-data-records
+config:
+  dataSource:
+    udm: companies
+    collectionKey: companyinfo
+    defaultPath: /data/companyinfo
+  fieldMapping:
+    defaultValue: {}
+isDeployed: true
+configurationState: CONFIGURED
+integrationKey: quickbooks

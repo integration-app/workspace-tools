@@ -1,0 +1,35 @@
+key: employees
+isDeactivated: false
+id: 66991cbbf4e2d58d0affcda8
+name: Employees
+archivedAt: null
+integrationId: 66991c9bf4e2d58d0affcc17
+customized: true
+universalDataSourceId: 66991cba8141c0ac6fd1020c
+collectionKey: clients
+udm: employees
+defaultPath: /data/clients
+integration:
+  key: freshbooks
+  state: READY
+  errors: []
+  isDeactivated: false
+  id: 66991c9bf4e2d58d0affcc17
+  name: Freshbooks
+  uuid: 98a80a77-8792-4af6-93c9-b5cb100f4ed5
+  connectorId: 643e84dcbadd839bce47c653
+  hasDefaultParameters: false
+  hasMissingParameters: false
+  hasDocumentation: false
+  hasOperations: true
+  hasData: true
+  hasEvents: false
+  hasGlobalWebhooks: false
+  hasUdm: true
+  baseUri: s3://integration-app-connectors/public/b2f84705-8dee-4e8c-8d68-b68d9d64168c
+  logoUri: https://static.integration.app/connectors/freshbooks-connector/logo.png
+  dataCollectionsCount: 14
+  operationsCount: 317
+  eventsCount: 0
+  authType: oauth2
+integrationKey: freshbooks

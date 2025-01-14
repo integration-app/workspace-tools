@@ -1,0 +1,9 @@
+isCustomized: true
+key: business-information-business-address
+id: 677ea40866bb414cfbd5f0bc
+name: 'Bussiness Information: Business Address'
+type: list-data-records
+config:
+  dataSource:
+    udm: null
+isDeployed: true

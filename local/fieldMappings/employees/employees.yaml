@@ -1,0 +1,9 @@
+key: employees
+isDeactivated: false
+id: 66991cbaa3a914498040759c
+name: Employees
+customized: false
+dataSourceKey: employees
+direction: import
+defaultImportValue:
+  $var: $

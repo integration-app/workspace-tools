@@ -1,0 +1,228 @@
+key: gusto
+name: Gusto
+appUri: https://gusto.com/
+logoUri: >-
+  https://static.integration.app/connectors/gusto/logo-229bc97d-3845-485d-a7ed-1ee3db9ceb9d.png
+apiDocsUri: https://docs.gusto.com/app-integrations/docs
+auth:
+  type: oauth2
+  credentialsSchema:
+    type: object
+    properties:
+      is_demo:
+        type: boolean
+        default: false
+        title: Connect to a demo instance
+      organization_level_token:
+        type: string
+      access_token:
+        type: string
+        title: Access Token
+        description: Access token to use for API calls
+      refresh_token:
+        type: string
+        title: Refresh Token
+        description: Refresh token to use for API calls
+  getOAuthConfig:
+    implementationType: mapping
+    filePath: auth/get-oauth-config.map.yml
+  makeApiClient:
+    implementationType: javascript
+    filePath: auth/make-api-client.js
+  test:
+    implementationType: javascript
+    filePath: auth/test.js
+parametersSchema:
+  type: object
+  properties:
+    clientId:
+      type: string
+    clientSecret:
+      type: string
+    scopes:
+      type: array
+      items:
+        type: string
+        enum:
+          - companies:read
+          - companies:write
+          - pay_schedules:read
+          - departments:write
+          - departments:read
+          - payrolls:read
+          - payrolls:write
+          - company_benefits:write
+          - company_benefits:read
+          - employees:manage
+          - employees:read
+          - employees:write
+          - jobs:write
+          - jobs:read
+          - employee_benefits:write
+          - employee_benefits:read
+          - contractors:manage
+          - contractors:read
+          - contractors:write
+        allowCustom: true
+      default:
+        - companies:read
+        - companies:write
+        - departments:write
+        - departments:read
+        - payrolls:read
+        - payrolls:write
+        - employees:manage
+        - employees:read
+        - employees:write
+        - jobs:write
+        - jobs:read
+        - contractors:manage
+        - contractors:read
+        - contractors:write
+api:
+  type: openapi
+ui:
+  schema:
+    type: object
+    properties:
+      is_demo:
+        type: boolean
+        default: false
+        title: Connect to a demo instance
+      organization_level_token:
+        type: string
+udm:
+  employees:
+    defaultCollection:
+      key: employees
+    collectionMappings:
+      - key: employees
+        fieldsFromCollection:
+          id:
+            $var: uuid
+          firstName:
+            $var: first_name
+          lastName:
+            $var: last_name
+          preferredName:
+            $var: preferred_first_name
+          personalEmail:
+            $var: email
+          workEmail:
+            $var: work_email
+          mobileNumber:
+            $var: phone
+          homeAddress: {}
+          workAddress: {}
+          employmentStatus:
+            $var: onboarding_status
+          companyId:
+            $var: company_uuid
+          departmentId:
+            $var: department_uuid
+          startDate:
+            $jsonata: '[$.jobs[?(@.primary=true)].hire_date]'
+          birthday:
+            $var: date_of_birth
+          title:
+            $jsonata: '[$.jobs[?(@.primary=true)].title]'
+          employments:
+            $var: jobs
+          fullName:
+            $concat:
+              values:
+                - $var: $.first_name
+                - $var: $.last_name
+              delimiter: ' '
+          terminationDate:
+            $jsonata: '[$.terminations[0].effective_date]'
+          compensations:
+            $iterate:
+              source:
+                $var: $.jobs[?(@.primary=true)].compensations
+              item:
+                id:
+                  $var: $.item.uuid
+                jobId:
+                  $var: $.item.job_uuid
+                rate:
+                  $var: $.item.rate
+                paymentUnit:
+                  $var: $.item.payment_unit
+                flsaStatus:
+                  $var: $.item.flsa_status
+                effectiveDate:
+                  $var: $.item.effective_date
+        fieldsToCollection:
+          uuid:
+            $var: id
+          first_name:
+            $var: firstName
+          last_name:
+            $var: lastName
+          email:
+            $var: personalEmail
+          company_uuid:
+            $var: companyId
+          department_uuid:
+            $var: departmentId
+          jobs:
+            $var: employments
+            items:
+              uuid: {}
+              version: {}
+              employee_uuid:
+                $var: id
+              current_compensation_uuid: {}
+              payment_unit: {}
+              primary: {}
+              title:
+                $var: title
+              compensations:
+                $var: compensations
+                items:
+                  uuid:
+                    $var: id
+                  version: {}
+                  payment_unit:
+                    $var: paymentUnit
+                  flsa_status:
+                    $var: flsaStatus
+                  job_uuid:
+                    $var: jobId
+                  effective_date:
+                    $var: effectiveDate
+                  rate:
+                    $var: rate
+                  adjust_for_minimum_wage: {}
+                  minimum_wages: {}
+              rate: {}
+              hire_date:
+                $var: startDate
+          terminations:
+            $var: terminationDate
+          date_of_birth:
+            $var: birthday
+          phone:
+            $var: mobileNumber
+          preferred_first_name:
+            $var: preferredName
+          work_email:
+            $var: workEmail
+id: 65266e3d70089fac48484f27
+uuid: fbc1f089-992d-4aef-bcea-d6c84299f01c
+baseUri: s3://integration-app-connectors/public/e5e32936-fe9e-4732-ae95-3c3c14279063
+revision: 806fe230-2202-4fb8-ad0f-58cb829d3257
+hasReadme: true
+status: production
+categories:
+  - HRIS
+udms:
+  - employees
+isReadOnly: true
+popularity: 79
+appUuid: 5add4071-3514-4636-8a59-899d439c2d53
+dataCollectionsCount: 10
+operationsCount: 100
+eventsCount: 0
+version: 1.0.1

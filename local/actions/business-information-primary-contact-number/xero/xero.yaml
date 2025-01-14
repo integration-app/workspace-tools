@@ -1,0 +1,29 @@
+isCustomized: true
+parentId: 677e660842e264a4e4876065
+integrationId: 66991cb7ec0742c929358972
+key: business-information-primary-contact-number
+id: 677e660842e264a4e487606c
+name: 'Bussiness Information: Mailing Address Xero '
+type: list-data-records
+config:
+  fieldMapping: {}
+  dataSource:
+    key: companies
+outputMapping:
+  $case:
+    cases:
+      - filter:
+          $eval:
+            $var: $.output.records[0].fields.Phones[0].PhoneNumber
+          isNotEmpty: null
+        value:
+          $concat:
+            values:
+              - $var: $.output.records[0].fields.Phones[0].PhoneCountryCode
+              - $var: $.output.records[0].fields.Phones[0].PhoneAreaCode
+              - $var: $.output.records[0].fields.Phones[0].PhoneNumber
+    default: ''
+isDeployed: true
+configurationState: NOT_CONFIGURED
+configurationStateMessage: Missing fields configuration.
+integrationKey: xero

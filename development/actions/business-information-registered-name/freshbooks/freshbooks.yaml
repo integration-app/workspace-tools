@@ -1,0 +1,16 @@
+isCustomized: true
+parentId: 677d10b4ffe897a736258ce1
+integrationId: 66991c9bf4e2d58d0affcc17
+key: business-information-registered-name
+id: 677d10b4ffe897a736258ce6
+name: 'Bussiness Information: Registered Name Freshbooks'
+type: list-data-records
+config:
+  dataSource:
+    key: companies
+outputMapping:
+  $var: $.output.records[0].fields.name
+isDeployed: true
+configurationState: NOT_CONFIGURED
+configurationStateMessage: Missing fields configuration.
+integrationKey: freshbooks

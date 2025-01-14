@@ -1,0 +1,16 @@
+isCustomized: true
+integrationId: 66991c9bf4e2d58d0affcc17
+key: freshbooks-fetchaccountid
+id: 66991cc0ec0742c929358a0e
+name: 'Freshbooks: Fetch Account ID'
+archivedAt: null
+type: api-request-to-external-app
+config:
+  request:
+    path: /auth/api/v1/users/me
+    method: GET
+outputMapping:
+  $var: $.output.data.response.roles[0].accountid
+isDeployed: true
+configurationState: CONFIGURED
+integrationKey: freshbooks

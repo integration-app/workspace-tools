@@ -1,0 +1,40 @@
+key: employees
+isDeactivated: false
+id: 66991cbb9aca0c293af5bce0
+name: Employees
+archivedAt: null
+integrationId: 66991ca4ec0742c92935885a
+customized: false
+universalDataSourceId: 66991cba8141c0ac6fd1020c
+collectionKey: employees
+collectionParameters: {}
+udm: employees
+defaultPath: /data/employees
+integration:
+  key: quickbooks
+  state: READY
+  errors: []
+  isDeactivated: false
+  id: 66991ca4ec0742c92935885a
+  name: Quickbooks
+  uuid: 571ce729-c7c3-4bfa-94ee-8328439ad533
+  connectorId: 66991c968141c0ac6fd10072
+  hasDefaultParameters: false
+  hasMissingParameters: false
+  hasDocumentation: true
+  hasOperations: true
+  hasData: true
+  hasEvents: false
+  hasGlobalWebhooks: false
+  hasUdm: true
+  areParametersCustomized: true
+  baseUri: >-
+    s3://integration-app-connectors/66991bc59aca0c293af5b03a/a1fb24ae-be54-496f-9a46-f1b20c7aea4a
+  connectorVersion: 1.0.0
+  logoUri: >-
+    https://static.integration.app/connectors/quickbooks/asset-a24a20d6-825f-42b8-bf97-520536429146.png
+  dataCollectionsCount: 18
+  operationsCount: 171
+  eventsCount: 0
+  authType: oauth2
+integrationKey: quickbooks

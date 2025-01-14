@@ -1,0 +1,9 @@
+isCustomized: true
+key: business-information-primary-contact-number
+id: 677e660842e264a4e4876065
+name: 'Bussiness Information: Primary Contact Number'
+type: list-data-records
+config:
+  dataSource:
+    udm: null
+isDeployed: true

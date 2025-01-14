@@ -1,0 +1,25 @@
+isCustomized: true
+parentId: 677e758320608f9f4701366b
+integrationId: 66991cb7ec0742c929358972
+key: business-information-industry
+id: 677e758420608f9f47013673
+name: 'Bussiness Information: Industry Xero'
+type: list-data-records
+config:
+  fieldMapping: {}
+  dataSource:
+    key: companies
+outputMapping:
+  $case:
+    cases:
+      - filter:
+          $eval:
+            $var: $.output.records[0].fields.LineOfBusiness
+          isNotEmpty: null
+        value:
+          $var: $.output.records[0].fields.LineOfBusiness
+    default: ''
+isDeployed: true
+configurationState: NOT_CONFIGURED
+configurationStateMessage: Missing fields configuration.
+integrationKey: xero

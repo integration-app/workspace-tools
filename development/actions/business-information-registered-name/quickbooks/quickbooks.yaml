@@ -1,0 +1,16 @@
+isCustomized: true
+parentId: 677d10b4ffe897a736258ce1
+integrationId: 66991ca4ec0742c92935885a
+key: business-information-registered-name
+id: 677d10b4ffe897a736258ce7
+name: 'Bussiness Information: Registered Name Quickbooks'
+type: list-data-records
+config:
+  dataSource:
+    key: companies
+outputMapping:
+  $var: $.output.records[0].name
+isDeployed: true
+configurationState: NOT_CONFIGURED
+configurationStateMessage: Missing fields configuration.
+integrationKey: quickbooks

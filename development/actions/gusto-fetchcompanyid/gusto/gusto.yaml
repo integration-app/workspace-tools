@@ -1,0 +1,16 @@
+isCustomized: true
+integrationId: 66991c9ea3a91449804073c7
+key: gusto-fetchcompanyid
+id: 66991cc1f4e2d58d0affce22
+name: 'Gusto: Fetch Company ID'
+archivedAt: null
+type: api-request-to-external-app
+config:
+  request:
+    path: /v1/token_info
+    method: GET
+outputMapping:
+  $var: $.output.data.resource.uuid
+isDeployed: true
+configurationState: CONFIGURED
+integrationKey: gusto
