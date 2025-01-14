@@ -1,0 +1,25 @@
+isCustomized: true
+parentId: 677e660842e264a4e4876065
+integrationId: 66991ca4ec0742c92935885a
+key: business-information-primary-contact-number
+id: 677e660842e264a4e487606b
+name: 'Bussiness Information: Mailing Address Quickbooks'
+type: list-data-records
+config:
+  fieldMapping: {}
+  dataSource:
+    key: companies
+outputMapping:
+  $case:
+    cases:
+      - filter:
+          $eval:
+            $var: $.output.records[0].fields.PrimaryPhone.FreeFormNumber
+          isNotEmpty: null
+        value:
+          $var: $.output.records[0].fields.PrimaryPhone.FreeFormNumber
+    default: ''
+isDeployed: true
+configurationState: NOT_CONFIGURED
+configurationStateMessage: Missing fields configuration.
+integrationKey: quickbooks

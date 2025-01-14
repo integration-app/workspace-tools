@@ -1,0 +1,15 @@
+isCustomized: true
+parentId: 66991cb8042f64915c234836
+integrationId: 66991ca4ec0742c92935885a
+key: accounting-fetchprofitandloss
+id: 66991cc06b1b36b7962beca5
+name: 'Accounting: Fetch Profit and Loss'
+archivedAt: null
+type: api-request-to-external-app
+config:
+  request:
+    method: GET
+    path: /reports/ProfitAndLoss
+isDeployed: true
+configurationState: CONFIGURED
+integrationKey: quickbooks

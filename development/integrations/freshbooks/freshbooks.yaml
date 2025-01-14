@@ -1,0 +1,5 @@
+id: 66991c9bf4e2d58d0affcc17
+key: freshbooks
+name: Freshbooks
+connectorId: 643e84dcbadd839bce47c653
+baseUri: s3://integration-app-connectors/public/b2f84705-8dee-4e8c-8d68-b68d9d64168c

@@ -1,0 +1,132 @@
+isCustomized: true
+parentId: 66991cb8042f64915c234836
+integrationId: 66991cb7ec0742c929358972
+key: accounting-fetchprofitandloss
+id: 66991cc06b1b36b7962becb0
+name: 'Accounting: Get Profit and Loss'
+archivedAt: null
+type: api-request-to-external-app
+config:
+  request:
+    method: GET
+    path: /Reports/ProfitAndLoss
+  responseSchema:
+    type: object
+    properties:
+      Reports:
+        type: array
+        items:
+          type: object
+          properties:
+            ReportID:
+              type: string
+            ReportName:
+              type: string
+            ReportType:
+              type: string
+            ReportTitles:
+              type: array
+              items:
+                type: string
+            ReportDate:
+              type: string
+            UpdatedDateUTC:
+              type: string
+            Fields:
+              type: any
+            Rows:
+              type: array
+              items:
+                type: object
+                properties:
+                  RowType:
+                    type: string
+                  Title:
+                    type: string
+                  Rows:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        RowType:
+                          type: string
+                        Cells:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              Value:
+                                type: string
+outputMapping:
+  statusCode: null
+  data:
+    Header:
+      Time: null
+      ReportName:
+        $var: $.output.data.Reports[0].ReportName
+      DateMacro: this calendar year-to-date
+      ReportBasis: Accrual
+      StartPeriod: '2024-06-01'
+      EndPeriod: '2024-06-30'
+      SummarizeColumnsBy: Total
+      Currency: USD
+      Option:
+        - Name: AccountingStandard
+          Value: GAAP
+        - Name: NoReportData
+          Value: false
+    Columns:
+      Column:
+        - ColTitle: Account
+          ColType: Account
+          MetaData:
+            - Name: ColKey
+              Value: account
+        - ColTitle: Total
+          ColType: Money
+          MetaData:
+            - Name: ColKey
+              Value: total
+    Rows:
+      Row:
+        - Header:
+            ColData:
+              - value: Income
+              - value: ''
+          Rows:
+            Row:
+              - ColData:
+                  - value:
+                      $var: $.output.data.Reports[0].Rows[1].Rows[0].Cells[0].Value
+                    id: >-
+                      $.output.data.Reports[0].Rows[1].Rows[0].Cells[0].Attributes[0].Id
+                  - value:
+                      $var: $.output.data.Reports[0].Rows[1].Rows[0].Cells[1].Value
+                type: Data
+              - ColData:
+                  - value: Total Income
+                  - value:
+                      $var: $.output.data.Reports[0].Rows[1].Rows[1].Cells[1].Value
+          Summary:
+            ColData:
+              - value: Gross Profit
+              - value:
+                  $var: $.output.data.Reports[0].Rows[2].Rows[0].Cells[1].Value
+          type: Section
+          group: Income
+        - Header:
+            ColData:
+              - value: Net Profit
+              - value:
+                  $var: $.output.data.Reports[0].Rows[4].Rows[0].Cells[1].Value
+          Summary:
+            ColData:
+              - value: Total Net Profit
+              - value:
+                  $var: $.output.data.Reports[0].Rows[4].Rows[0].Cells[1].Value
+          type: Section
+          group: NetIncome
+  headers: null
+isDeployed: true
+configurationState: CONFIGURED
+integrationKey: xero

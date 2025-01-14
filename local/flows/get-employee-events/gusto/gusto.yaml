@@ -1,0 +1,113 @@
+key: get-employee-events
+id: 66991ccfec0742c929358b24
+name: Get employee Events
+archivedAt: null
+universalFlowId: 66991cba042f64915c234852
+integrationId: 66991c9ea3a91449804073c7
+integration:
+  key: gusto
+  state: READY
+  errors: []
+  isDeactivated: false
+  id: 66991c9ea3a91449804073c7
+  name: Gusto
+  uuid: 3a04d91e-affa-4de8-8407-d82010551ba8
+  connectorId: 65266e3d70089fac48484f27
+  hasDefaultParameters: false
+  hasMissingParameters: false
+  hasDocumentation: true
+  hasOperations: true
+  hasData: true
+  hasEvents: false
+  hasGlobalWebhooks: false
+  hasUdm: true
+  areParametersCustomized: true
+  baseUri: s3://integration-app-connectors/public/717d272d-fd9c-4b03-a5ae-afb19933657b
+  connectorVersion: 1.0.1
+  logoUri: >-
+    https://static.integration.app/connectors/gusto/logo-229bc97d-3845-485d-a7ed-1ee3db9ceb9d.png
+  dataCollectionsCount: 10
+  operationsCount: 163
+  eventsCount: 0
+  authType: oauth2
+nodes:
+  data-record-created-trigger:
+    type: data-record-created-trigger
+    name: Data Record Created Trigger
+    config:
+      dataSource:
+        key: employees
+      fieldMapping: {}
+    links:
+      - key: find-data-record-by-id
+  data-record-updated-trigger:
+    type: data-record-updated-trigger
+    name: Data Record Updated Trigger
+    config:
+      dataSource:
+        key: employees
+      fieldMapping: {}
+    links:
+      - key: find-data-record-by-id
+  data-record-deleted-trigger:
+    type: data-record-deleted-trigger
+    name: Data Record Deleted Trigger
+    config:
+      dataSource:
+        key: employees
+      fieldMapping: {}
+    links:
+      - key: api-request-to-your-app
+  api-request-to-your-app:
+    type: api-request-to-your-app
+    name: Delete employee in My App
+    config:
+      request:
+        body:
+          id:
+            $var: $.input.data-record-deleted-trigger.record.id
+    links: []
+  find-data-record-by-id:
+    type: find-data-record-by-id
+    name: Find Data Record By Id
+    config:
+      dataSource:
+        key: employees
+      fieldMapping:
+        key: employees
+      id:
+        $firstNotEmpty:
+          - $var: $.input.data-record-created-trigger.record.id
+          - $var: $.input.data-record-updated-trigger.record.id
+    links:
+      - key: api-request-to-your-app-1
+  api-request-to-your-app-1:
+    type: api-request-to-your-app
+    name: Send employee event to My App
+    config:
+      request:
+        body:
+          id:
+            $var: $.input.find-data-record-by-id.id
+          fields:
+            $var: $.input.find-data-record-by-id.fields
+          eventType:
+            $case:
+              cases:
+                - filter:
+                    $eval:
+                      $var: $.input.data-record-created-trigger
+                    isNotEmpty: null
+                  value: created
+                - filter:
+                    $eval:
+                      $var: $.input.data-record-updated-trigger
+                    isNotEmpty: null
+                  value: updated
+    links: []
+autoCreateInstances: false
+customized: false
+isDeployed: false
+configurationState: NOT_CONFIGURED
+configurationStateMessage: 'Data Collection employees has missing required parameters: company_id'
+integrationKey: gusto

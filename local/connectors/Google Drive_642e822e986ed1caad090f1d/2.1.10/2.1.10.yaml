@@ -1,0 +1,241 @@
+name: Google Drive
+logoUri: https://static.integration.app/connectors/gdrive/logo.png
+connectionMode: popup
+key: google-drive
+parametersSchema:
+  type: object
+  properties:
+    clientId:
+      type: string
+    clientSecret:
+      type: string
+    scopes:
+      type: array
+      items:
+        type: string
+        enum:
+          - https://www.googleapis.com/auth/drive
+          - https://www.googleapis.com/auth/drive.file
+          - https://www.googleapis.com/auth/drive.metadata.readonly
+          - https://www.googleapis.com/auth/userinfo.profile
+          - https://www.googleapis.com/auth/userinfo.email
+        allowCustom: true
+      default:
+        - https://www.googleapis.com/auth/drive
+        - https://www.googleapis.com/auth/drive.file
+        - https://www.googleapis.com/auth/drive.metadata.readonly
+        - https://www.googleapis.com/auth/userinfo.profile
+        - https://www.googleapis.com/auth/userinfo.email
+  required:
+    - clientId
+    - clientSecret
+auth:
+  type: oauth2
+  credentialsSchema:
+    type: object
+    properties:
+      access_token:
+        type: string
+        title: Access Token
+        description: Access token to use for API calls
+      refresh_token:
+        type: string
+        title: Refresh Token
+        description: Refresh token to use for API calls
+  getOAuthConfig:
+    implementationType: mapping
+    filePath: auth/get-oauth-config.map.yml
+  makeApiClient:
+    implementationType: mapping
+    filePath: auth/make-api-client.yml
+  getCredentialsFromAccessTokenResponse:
+    implementationType: javascript
+    filePath: auth/get-credentials-from-access-token-response.ts
+api:
+  type: openapi
+appUri: https://drive.google.com/drive
+apiDocsUri: https://developers.google.com/drive/api/reference/rest/v3
+udm:
+  files:
+    defaultCollection:
+      key: files
+    collectionMappings:
+      - key: files
+        fieldsFromCollection:
+          id:
+            $var: $.id
+          mimeType:
+            $var: $.mimeType
+          name:
+            $var: $.name
+          description:
+            $var: $.description
+          previewUri:
+            $var: $.thumbnailLink
+          size:
+            $var: $.size
+          downloadUri:
+            $var: $.webContentLink
+          uri:
+            $var: $.webViewLink
+          createdTime:
+            $var: $.createdTime
+          folderId:
+            $var: $.folderId
+        fieldsToCollection:
+          id:
+            $var: $.id
+          name:
+            $var: $.name
+          description:
+            $var: $.description
+          mimeType:
+            $var: $.mimeType
+          parents:
+            - $var: $.folderId
+          thumbnailLink:
+            $var: $.previewUri
+          webContentLink:
+            $var: $.downloadUri
+          webViewLink:
+            $var: $.uri
+          size:
+            $var: $.size
+          createdTime:
+            $var: $.createdTime
+          folderId:
+            $var: $.folderId
+  folders:
+    defaultCollection:
+      key: files
+    collectionMappings:
+      - key: files
+        fieldsFromCollection:
+          id:
+            $var: $.id
+          name:
+            $var: $.name
+          description:
+            $var: $.description
+          size:
+            $var: $.size
+          parentFolderId:
+            $var: $.folderId
+          driveId:
+            $var: $.driveId
+          uri:
+            $var: $.webViewLink
+          createdTime:
+            $var: $.createdTime
+          updatedTime:
+            $var: $.modifiedTime
+        fieldsToCollection:
+          id:
+            $var: $.id
+          name:
+            $var: $.name
+          description:
+            $var: $.description
+          driveId:
+            $var: $.driveId
+          parentFolderId:
+            $var: $.parentFolderId
+          parents:
+            - $var: $.parentFolderId
+          webViewLink:
+            $var: $.uri
+          size:
+            $var: $.size
+          createdTime:
+            $var: $.createdTime
+          modifiedTime:
+            $var: $.updatedTime
+  drives:
+    collectionMappings:
+      - key: drives
+        fieldsFromCollection:
+          id:
+            $var: $.id
+          name:
+            $var: $.name
+          createdTime:
+            $var: $.createdTime
+        fieldsToCollection:
+          id:
+            $var: $.id
+          name:
+            $var: $.name
+          createdTime:
+            $var: $.createdTime
+  drive-items:
+    collectionMappings:
+      - key: files
+        fieldsFromCollection:
+          id:
+            $var: $.id
+          itemType:
+            $var: $.type
+          name:
+            $var: $.name
+          mimeType:
+            $var: $.mimeType
+          description:
+            $var: $.description
+          previewUri:
+            $var: $.thumbnailLink
+          size:
+            $var: $.size
+          downloadUri:
+            $var: $.webContentLink
+          uri:
+            $var: $.webViewLink
+          createdTime:
+            $var: $.createdTime
+          folderId:
+            $var: $.folderId
+        fieldsToCollection:
+          id:
+            $var: $.id
+          type:
+            $var: $.itemType
+          name:
+            $var: $.name
+          description:
+            $var: $.description
+          mimeType:
+            $var: $.mimeType
+          parents:
+            - $var: $.folderId
+          thumbnailLink:
+            $var: $.previewUri
+          webContentLink:
+            $var: $.downloadUri
+          webViewLink:
+            $var: $.uri
+          size:
+            $var: $.size
+          createdTime:
+            $var: $.createdTime
+          folderId:
+            $var: $.folderId
+id: 642e822e986ed1caad090f1d
+uuid: 807b49bf-b10b-4b93-997b-cf89e92a5589
+baseUri: s3://integration-app-connectors/public/61e1ec1b-3684-4409-8b8f-de8c63aff11f
+revision: 2cd84d8a-dff5-425e-ba8d-4cb1fcb388d6
+hasReadme: true
+status: production
+categories:
+  - File Storage
+  - Document Management
+udms:
+  - files
+  - folders
+  - drives
+  - drive-items
+isReadOnly: true
+popularity: 3542
+appUuid: a7d76105-5a82-4cd2-be0e-d459f71a9bfa
+dataCollectionsCount: 2
+operationsCount: 51
+eventsCount: 1
+version: 2.1.10

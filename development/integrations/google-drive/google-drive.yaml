@@ -1,0 +1,6 @@
+id: 6752fdbff31e1b4d5dd4f8c8
+key: google-drive
+name: Google Drive
+connectorId: 642e822e986ed1caad090f1d
+baseUri: s3://integration-app-connectors/public/a052f441-fd13-4cf8-a998-d9b6460d35c3
+connectorVersion: 2.1.10

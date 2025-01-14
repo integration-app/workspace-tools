@@ -1,0 +1,18 @@
+key: business-information
+isDeactivated: false
+id: 677bcf24b72196fa7e02f9f2
+name: Business Information
+customized: true
+dataSourceKey: companies
+direction: import
+defaultImportValue:
+  registeredName:
+    $var: $.name
+  registeredAddress:
+    $var: $.primaryAddress.full
+  industry:
+    $var: $.industry
+defaultExportValue:
+  name: registeredName
+  addresses:
+    - null

@@ -1,0 +1,23 @@
+isCustomized: true
+parentId: 67586c0349bddedd11b26a5d
+integrationId: 6752fdbff31e1b4d5dd4f8c8
+key: download-file
+id: 67586c0349bddedd11b26a57
+name: 'Files: Download File'
+archivedAt: null
+type: connector-operation
+inputSchema:
+  type: object
+  properties:
+    fileId:
+      type: string
+  required:
+    - fileId
+config:
+  operationKey: download-file
+  input:
+    fileId:
+      $var: $.input.fileId
+isDeployed: true
+configurationState: CONFIGURED
+integrationKey: google-drive

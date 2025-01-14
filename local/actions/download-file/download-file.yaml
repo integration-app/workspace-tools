@@ -1,0 +1,18 @@
+isCustomized: true
+key: download-file
+id: 67586c0349bddedd11b26a5d
+name: 'Files: Download File'
+type: connector-operation
+inputSchema:
+  type: object
+  properties:
+    fileId:
+      type: string
+  required:
+    - fileId
+config:
+  operationKey: download-file
+  input:
+    fileId:
+      $var: $.input.fileId
+isDeployed: true

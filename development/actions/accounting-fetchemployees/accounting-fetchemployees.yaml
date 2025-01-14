@@ -1,0 +1,11 @@
+isCustomized: true
+key: accounting-fetchemployees
+id: 66991cb8ec0742c929358981
+name: 'Accounting: Fetch Employees'
+type: list-data-records
+config:
+  dataSource:
+    key: employees
+  fieldMapping:
+    key: employees
+isDeployed: true

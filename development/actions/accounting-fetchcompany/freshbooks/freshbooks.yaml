@@ -1,0 +1,18 @@
+isCustomized: false
+parentId: 66991cb8f4e2d58d0affcd6e
+integrationId: 66991c9bf4e2d58d0affcc17
+key: accounting-fetchcompany
+id: 66991cbd042f64915c234893
+name: 'Accounting: Fetch Company'
+archivedAt: null
+type: list-data-records
+config:
+  dataSource:
+    udm: companies
+    collectionKey: businesses
+    defaultPath: /data/businesses
+  fieldMapping: {}
+isDeployed: true
+configurationState: NOT_CONFIGURED
+configurationStateMessage: Missing fields configuration.
+integrationKey: freshbooks

@@ -1,0 +1,863 @@
+name: Xero
+logoUri: https://static.integration.app/connectors/xero-connector/logo.png
+connectionMode: popup
+key: xero
+appUri: https://xero.com
+apiDocsUri: https://developer.xero.com/documentation/getting-started-guide
+parametersSchema:
+  type: object
+  properties:
+    clientId:
+      type: string
+    clientSecret:
+      type: string
+    scopes:
+      type: array
+      items:
+        type: string
+        enum:
+          - email
+          - openid
+          - offline_access
+          - profile
+          - accounting.attachments
+          - accounting.attachments.read
+          - accounting.contacts
+          - accounting.contacts.read
+          - accounting.journals.read
+          - accounting.reports.read
+          - accounting.reports.tenninetynine.read
+          - accounting.settings
+          - accounting.settings.read
+          - accounting.transactions
+          - accounting.transactions.read
+        allowCustom: true
+      default:
+        - email
+        - openid
+        - profile
+        - offline_access
+        - accounting.attachments
+        - accounting.attachments.read
+        - accounting.contacts
+        - accounting.contacts.read
+        - accounting.journals.read
+        - accounting.reports.read
+        - accounting.reports.tenninetynine.read
+        - accounting.settings
+        - accounting.settings.read
+        - accounting.transactions
+        - accounting.transactions.read
+auth:
+  type: oauth2
+  credentialsSchema:
+    type: object
+    properties:
+      access_token:
+        type: string
+        title: Access Token
+        description: Access token to use for API calls
+      refresh_token:
+        type: string
+        title: Refresh Token
+        description: Refresh token to use for API calls
+  getOAuthConfig:
+    implementationType: mapping
+    filePath: auth/oauth-config.yml
+  getCredentialsFromAccessTokenResponse:
+    implementationType: javascript
+    filePath: auth/get-credentials-from-access-token-response.ts
+  makeApiClient:
+    implementationType: mapping
+    filePath: auth/make-api-client.yml
+  test:
+    implementationType: javascript
+    filePath: auth/test.ts
+api:
+  type: openapi
+udm:
+  contacts:
+    collectionMappings:
+      - key: contacts
+        fieldsFromCollection:
+          id:
+            $var: ContactID
+          fullName:
+            $concat:
+              delimiter: ' '
+              values:
+                - $var: $.FirstName
+                - $var: $.LastName
+          firstName:
+            $var: FirstName
+          lastName:
+            $var: LastName
+          primaryEmail:
+            $var: EmailAddress
+          primaryPhone:
+            $var: Phones[0].PhoneNumber
+          phones:
+            $var: Phones
+            $map:
+              value:
+                $var: PhoneNumber
+              type:
+                $var: PhoneType
+          primaryAddress:
+            type: primary
+            full:
+              $concat:
+                values:
+                  - $var: $.Addresses[0].AddressLine1
+                  - $var: $.Addresses[0].City
+                  - $var: $.Addresses[0].Region
+                  - $var: $.Addresses[0].Country
+                  - $var: $.Addresses[0].PostalCode
+                delimiter: ', '
+            street:
+              $var: Addresses[0].AddressLine1
+            city:
+              $var: Addresses[0].City
+            state:
+              $var: Addresses[0].Region
+            country:
+              $var: Addresses[0].Country
+            zip:
+              $var: Addresses[0].PostalCode
+          addresses:
+            $var: $.Addresses
+          updatedTime:
+            $var: UpdatedDateUTC
+          companyName:
+            $var: $.Name
+        fieldsToCollection:
+          ContactID:
+            $var: $.id
+          Name:
+            $var: $.fullName
+          FirstName:
+            $var: $.firstName
+          LastName:
+            $var: $.lastName
+          EmailAddress:
+            $var: $.primaryEmail
+          Addresses:
+            $var: $.addresses
+          Phones:
+            $var: $.phones
+    defaultCollection:
+      key: contacts
+  products:
+    collectionMappings:
+      - key: items
+        fieldsFromCollection:
+          id:
+            $var: $.ItemID
+          name:
+            $var: $.Name
+          description:
+            $var: $.Description
+          code:
+            $var: $.Code
+          updatedTime:
+            $var: $.UpdatedDateUTC
+          price:
+            $var: $.PurchaseDetails.UnitPrice
+        fieldsToCollection:
+          Code:
+            $var: $.code
+          Name:
+            $var: $.name
+          Description:
+            $var: $.description
+          ItemID:
+            $var: $.id
+          PurchaseDetails:
+            UnitPrice:
+              $var: $.price
+    defaultCollection:
+      key: items
+  users:
+    collectionMappings:
+      - key: users
+        fieldsFromCollection:
+          id:
+            $var: UserID
+          fullName:
+            $concat:
+              delimiter: ' '
+              values:
+                - $var: $.FirstName
+                - $var: $.LastName
+          firstName:
+            $var: FirstName
+          lastName:
+            $var: LastName
+          primaryEmail:
+            $var: EmailAddress
+          updatedTime:
+            $var: UpdatedDateUTC
+          roleId:
+            $var: $.OrganisationRole
+        fieldsToCollection:
+          UserID:
+            $var: $.id
+          EmailAddress:
+            $var: primaryEmail
+          FirstName:
+            $var: firstName
+          LastName:
+            $var: lastName
+          UpdatedDateUTC:
+            $var: updatedTime
+          OrganisationRole:
+            $var: roleId
+    defaultCollection:
+      key: users
+  invoices:
+    collectionMappings:
+      - key: invoices
+        fieldsFromCollection:
+          id:
+            $var: $.InvoiceID
+          number:
+            $var: $.InvoiceNumber
+          status:
+            $var: $.Status
+          customerId:
+            $var: $.Contact.ContactID
+          currency:
+            $var: $.CurrencyCode
+          payments:
+            $iterate:
+              source:
+                $var: $.Payments
+              item:
+                $var: $.item.PaymentID
+          lineItemsIds:
+            $iterate:
+              source:
+                $var: $.LineItems
+              item:
+                $var: $.item.LineItemID
+          totalAmount:
+            $var: $.Total
+          totalTax:
+            $var: $.TotalTax
+          exchangeRate:
+            $var: $.CurrencyRate
+          dueDate:
+            $var: $.DueDate
+          issueDate:
+            $var: $.Date
+          totalDiscount:
+            $var: $.TotalDiscount
+          subTotal:
+            $var: $.SubTotal
+          lineItems:
+            $iterate:
+              source:
+                $var: $.LineItems
+              item:
+                id:
+                  $var: $.item.LineItemID
+                description:
+                  $var: $.item.Description
+                quantity:
+                  $var: $.item.Quantity
+                code:
+                  $var: $.item.ItemCode
+                ledgerAccountId:
+                  $var: $.item.AccountID
+                taxAmount:
+                  $var: $.item.TaxAmount
+                totalAmount:
+                  $var: $.item.LineAmount
+        fieldsToCollection:
+          Contact:
+            ContactID:
+              $var: $.customerId
+          Date:
+            $var: $.issueDate
+          DueDate:
+            $var: $.dueDate
+          InvoiceNumber:
+            $var: $.number
+          CurrencyCode:
+            $var: $.currency
+          CurrencyRate:
+            $var: $.exchangeRate
+          Status:
+            $var: $.status
+          InvoiceID:
+            $var: $.id
+          LineItems:
+            $iterate:
+              source:
+                $var: $.lineItems
+              item:
+                Description:
+                  $var: $.item.description
+                Quantity:
+                  $var: $.item.quantity
+                ItemCode:
+                  $var: $.item.code
+                AccountID:
+                  $var: $.item.ledgerAccountId
+                TaxAmount:
+                  $var: $.item.taxAmount
+                LineAmount:
+                  $var: $.item.totalAmount
+    defaultCollection:
+      key: invoices
+  payments:
+    collectionMappings:
+      - key: payments
+        fieldsFromCollection:
+          id:
+            $var: $.PaymentID
+          status:
+            $var: $.Status
+          type:
+            $var: $.PaymentType
+          exchangeRate:
+            $var: $.CurrencyRate
+          totalAmount:
+            $var: $.Amount
+          accountId:
+            $var: $.Account.AccountID
+          transactionDate:
+            $var: $.Date
+          ledgerAccountId:
+            $var: $.Account.AccountID
+        fieldsToCollection:
+          PaymentID:
+            $var: $.id
+          PaymentType:
+            $var: $.type
+          Status:
+            $var: $.status
+          Amount:
+            $var: $.totalAmount
+          Date:
+            $var: $.transactionDate
+          Account:
+            AccountID:
+              $var: $.ledgerAccountId
+          CurrencyRate:
+            $var: $.exchangeRate
+    defaultCollection:
+      key: payments
+  customers:
+    collectionMappings:
+      - key: contacts
+        fieldsFromCollection:
+          id:
+            $var: ContactID
+          name:
+            $var: Name
+          code:
+            $var: ContactNumber
+          firstName:
+            $var: FirstName
+          lastName:
+            $var: LastName
+          currency:
+            $var: DefaultCurrency
+          addresses:
+            $iterate:
+              source:
+                $var: $.Addresses
+              item:
+                city:
+                  $var: $.item.City
+                type:
+                  $var: $.item.AddressType
+                street:
+                  $var: $.item.AddressLine1
+                country:
+                  $var: $.item.Country
+                zip:
+                  $var: $.item.PostalCode
+                state:
+                  $var: $.item.Region
+          phones:
+            $iterate:
+              source:
+                $var: $.Phones
+              item:
+                value:
+                  $var: $.item.PhoneNumber
+                type:
+                  $var: $.item.PhoneType
+          websiteUrl:
+            $var: Website
+          tax_number:
+            $var: TaxNumber
+          status:
+            $var: $.ContactStatus
+          emails:
+            - value:
+                $var: $.EmailAddress
+          createdTime:
+            $var: $.BrandingTheme.CreatedDateUTC
+          updatedTime:
+            $var: $.UpdatedDateUTC
+        fieldsToCollection:
+          ContactID:
+            $var: id
+          ContactNumber:
+            $var: code
+          ContactStatus:
+            $var: status
+          Name:
+            $var: name
+          FirstName:
+            $var: firstName
+          LastName:
+            $var: lastName
+          EmailAddress:
+            $var: emails[0].value
+          TaxNumber:
+            $var: tax_number
+          Addresses:
+            $var: addresses
+          Phones:
+            $var: phones
+          DefaultCurrency:
+            $var: currency
+          PaymentTerms: {}
+          UpdatedDateUTC:
+            $var: updatedTime
+          Website:
+            $var: websiteUrl
+  suppliers:
+    defaultCollection:
+      key: contacts
+    collectionMappings:
+      - key: contacts
+        fieldsFromCollection:
+          id:
+            $var: ContactID
+          name:
+            $var: Name
+          code:
+            $var: ContactNumber
+          firstName:
+            $var: FirstName
+          lastName:
+            $var: LastName
+          currency:
+            $var: DefaultCurrency
+          addresses:
+            $iterate:
+              source:
+                $var: $.Addresses
+              item:
+                city:
+                  $var: $.item.City
+                type:
+                  $var: $.item.AddressType
+                street:
+                  $var: $.item.AddressLine1
+                country:
+                  $var: $.item.Country
+                zip:
+                  $var: $.item.PostalCode
+                state:
+                  $var: $.item.Region
+          phones:
+            $iterate:
+              source:
+                $var: $.Phones
+              item:
+                value:
+                  $var: $.item.PhoneNumber
+                type:
+                  $var: $.item.PhoneType
+          websiteUrl:
+            $var: Website
+          tax_number:
+            $var: TaxNumber
+          status:
+            $var: $.ContactStatus
+          emails:
+            - value:
+                $var: $.EmailAddress
+          updatedTime:
+            $var: $.UpdatedDateUTC
+        fieldsToCollection:
+          ContactID:
+            $var: id
+          ContactNumber:
+            $var: code
+          ContactStatus:
+            $var: status
+          Name:
+            $var: name
+          FirstName:
+            $var: firstName
+          LastName:
+            $var: lastName
+          EmailAddress:
+            $var: emails[0].value
+          Addresses:
+            $var: addresses
+          Phones:
+            $var: phones
+          DefaultCurrency:
+            $var: currency
+          UpdatedDateUTC:
+            $var: updatedTime
+          Website:
+            $var: websiteUrl
+  companies:
+    collectionMappings:
+      - key: organisation
+        fieldsFromCollection:
+          id:
+            $var: $.OrganisationID
+          name:
+            $var: $.Name
+          phones:
+            $iterate:
+              source:
+                $var: $.Phones
+              item:
+                value:
+                  $var: $.item.PhoneNumber
+                type:
+                  $var: $.item.PhoneType
+          primaryPhone:
+            $var: $.Phones[0].PhoneNumber
+          addresses:
+            $iterate:
+              source:
+                $var: $.Addresses
+              item:
+                type:
+                  $var: $.item.AddressType
+                street:
+                  $var: $.item.AddressLine1
+                city:
+                  $var: $.item.City
+                state:
+                  $var: $.item.Region
+                country:
+                  $var: $.item.Country
+                zip:
+                  $var: $.item.PostalCode
+        fieldsToCollection:
+          OrganisationID:
+            $var: $.id
+          Name:
+            $var: $.name
+          Addresses:
+            $iterate:
+              source:
+                $var: $.addresses
+              item:
+                AddressType:
+                  $var: $.item.type
+                AddressLine1:
+                  $var: $.item.street
+                City:
+                  $var: $.item.city
+                Region:
+                  $var: $.item.state
+                Country:
+                  $var: $.item.country
+                PostalCode:
+                  $var: $.item.zip
+          Phones:
+            $iterate:
+              source:
+                $var: $.phones
+              item:
+                PhoneType:
+                  $var: $.item.type
+                PhoneNumber:
+                  $var: $.item.value
+  credit-notes:
+    collectionMappings:
+      - key: credit-notes
+        fieldsFromCollection:
+          id:
+            $var: $.CreditNoteID
+          number:
+            $var: $.CreditNoteNumber
+          currency:
+            $var: $.CurrencyCode
+          exchangeRate:
+            $var: $.CurrencyRate
+          lineItems:
+            $iterate:
+              source:
+                $var: $.LineItems
+              item:
+                id:
+                  $var: $.item.LineItemID
+                description:
+                  $var: $.item.Description
+                quantity:
+                  $var: $.item.ItemCode
+                totalLineAmount:
+                  $var: $.item.LineAmount
+                ledgerAccountId:
+                  $var: $.item.AccountID
+          totalAmount:
+            $var: $.Total
+          totalTax:
+            $var: $.TotalTax
+          subTotal:
+            $var: $.SubTotal
+          issueDate:
+            $var: $.Date
+          payments:
+            $iterate:
+              source:
+                $var: $.Payments
+              item:
+                $var: $.item.PaymentID
+          customerId:
+            $var: $.Contact.ContactID
+          status:
+            $var: $.Status
+        fieldsToCollection:
+          Contact:
+            ContactID:
+              $var: $.customerId
+          Date:
+            $var: $.issueDate
+          Status:
+            $var: $.status
+          LineItems:
+            $iterate:
+              source:
+                $var: $.lineItems
+              item:
+                LineItemID:
+                  $var: $.item.id
+                Description:
+                  $var: $.item.description
+                Quantity:
+                  $var: $.item.quantity
+                AccountID:
+                  $var: $.item.ledgerAccountId
+                LineAmount:
+                  $var: $.item.totalLineAmount
+          SubTotal:
+            $var: $.subTotal
+          TotalTax:
+            $var: $.totalTax
+          Total:
+            $var: $.totalAmount
+          CurrencyCode:
+            $var: $.currency
+          CreditNoteID:
+            $var: $.id
+          CreditNoteNumber:
+            $var: $.number
+          CurrencyRate:
+            $var: $.exchangeRate
+          Payments:
+            $iterate:
+              source:
+                $var: $.payments
+              item:
+                PaymentID:
+                  $var: $.item
+          ID:
+            $var: $.id
+  tax-rates:
+    collectionMappings:
+      - key: tax-rates
+        fieldsFromCollection:
+          name:
+            $var: $.Name
+          type:
+            $var: $.TaxType
+          effectiveTaxRate:
+            $var: $.EffectiveRate
+        fieldsToCollection:
+          Name:
+            $var: $.name
+          TaxType:
+            $var: $.type
+          EffectiveRate:
+            $var: $.effectiveTaxRate
+  journal-entries:
+    collectionMappings:
+      - key: journals
+        fieldsFromCollection:
+          id:
+            $var: $.JournalID
+          number:
+            $var: $.JournalNumber
+          lineItems:
+            $iterate:
+              source:
+                $var: $.JournalLines
+              item:
+                id:
+                  $var: $.item.JournalLineID
+                description:
+                  $var: $.item.Description
+                type:
+                  $var: $.item.AccountType
+                amount:
+                  $var: $.item.GrossAmount
+                ledgerAccountId:
+                  $var: $.item.AccountID
+          transactionDate:
+            $var: $.JournalDate
+          createdTime:
+            $var: $.CreatedDateUTC
+        fieldsToCollection:
+          JournalID:
+            $var: $.id
+          JournalDate:
+            $var: $.transactionDate
+          JournalNumber:
+            $var: $.number
+          CreatedDateUTC:
+            $var: $.createdTime
+          JournalLines:
+            $iterate:
+              source:
+                $var: $.lineItems
+              item:
+                JournalLineID:
+                  $var: $.item.id
+                AccountID:
+                  $var: $.item.ledgerAccountId
+                AccountType:
+                  $var: $.item.type
+                Description:
+                  $var: $.item.description
+                GrossAmount:
+                  $var: $.item.amount
+  orders:
+    collectionMappings:
+      - key: purchase-orders
+        fieldsFromCollection:
+          id:
+            $var: $.PurchaseOrderID
+          name:
+            $var: $.PurchaseOrderNumber
+          status:
+            $var: $.Status
+          currency:
+            $var: $.CurrencyCode
+          totalAmount:
+            $var: $.Total
+          lineItems:
+            $iterate:
+              source:
+                $var: $.LineItems
+              item:
+                name:
+                  $var: $.item.Item.Name
+                sku:
+                  $var: $.item.ItemCode
+                quantity:
+                  $var: $.item.Quantity
+                totalAmount:
+                  $var: $.item.LineAmount
+                unitPrice:
+                  $var: $.item.UnitAmount
+          updatedTime:
+            $var: $.UpdatedDateUTC
+        fieldsToCollection:
+          LineItems:
+            $iterate:
+              source:
+                $var: $.lineItems
+              item:
+                Quantity:
+                  $var: $.item.quantity
+                UnitAmount:
+                  $var: $.item.unitPrice
+                Item:
+                  Code:
+                    $var: $.item.sku
+                  Name:
+                    $var: $.item.name
+                LineAmount:
+                  $var: $.item.totalAmount
+          CurrencyCode:
+            $var: $.currency
+          Status:
+            $var: $.status
+          Total:
+            $var: $.totalAmount
+  ledger-accounts:
+    collectionMappings:
+      - key: accounts
+        fieldsFromCollection:
+          id:
+            $var: $.AccountID
+          name:
+            $var: $.Name
+          code:
+            $var: $.Code
+          description:
+            $var: $.Description
+          classification:
+            $var: $.Class
+          type:
+            $var: $.Type
+          status:
+            $var: $.Status
+          currency:
+            $var: $.CurrencyCode
+          updatedTime:
+            $var: $.UpdatedDateUTC
+        fieldsToCollection:
+          Code:
+            $var: $.code
+          Name:
+            $var: $.name
+          AccountID:
+            $var: $.id
+          Type:
+            $var: $.type
+          Status:
+            $var: $.status
+          Description:
+            $var: $.description
+          CurrencyCode:
+            $var: $.currency
+          Class:
+            $var: $.classification
+          UpdatedDateUTC:
+            $var: $.updatedTime
+id: 642c613b986ed1caad98172b
+uuid: a38cd049-9934-4ee1-8721-0d35be4ac5dd
+baseUri: s3://integration-app-connectors/public/134a4dac-b6f4-425e-b135-81b4f0025f6a
+revision: 46fa7f23-2b93-4e0a-96ba-e5460206d870
+hasReadme: false
+status: production
+categories:
+  - Accounting
+udms:
+  - contacts
+  - products
+  - users
+  - invoices
+  - payments
+  - customers
+  - suppliers
+  - companies
+  - credit-notes
+  - tax-rates
+  - journal-entries
+  - orders
+  - ledger-accounts
+isReadOnly: true
+popularity: 226
+appUuid: 04fd6313-852f-470d-9896-7159dcfb023a
+dataCollectionsCount: 17
+operationsCount: 234
+eventsCount: 0
+version: 1.0.0

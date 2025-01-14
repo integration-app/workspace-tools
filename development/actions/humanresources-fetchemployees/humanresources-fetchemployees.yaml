@@ -1,0 +1,9 @@
+isCustomized: true
+key: humanresources-fetchemployees
+id: 66991cb98141c0ac6fd101ea
+name: 'Human Resources: Fetch Employees'
+type: api-request-to-external-app
+inputSchema:
+  type: object
+  properties: {}
+isDeployed: true

@@ -1,0 +1,39 @@
+key: employees
+isDeactivated: false
+id: 66991cbb9aca0c293af5bcd5
+name: Employees
+archivedAt: null
+integrationId: 66991c9ea3a91449804073c7
+customized: false
+universalDataSourceId: 66991cba8141c0ac6fd1020c
+collectionKey: employees
+collectionParameters: {}
+udm: employees
+defaultPath: /data/employees
+integration:
+  key: gusto
+  state: READY
+  errors: []
+  isDeactivated: false
+  id: 66991c9ea3a91449804073c7
+  name: Gusto
+  uuid: 3a04d91e-affa-4de8-8407-d82010551ba8
+  connectorId: 65266e3d70089fac48484f27
+  hasDefaultParameters: false
+  hasMissingParameters: false
+  hasDocumentation: true
+  hasOperations: true
+  hasData: true
+  hasEvents: false
+  hasGlobalWebhooks: false
+  hasUdm: true
+  areParametersCustomized: true
+  baseUri: s3://integration-app-connectors/public/717d272d-fd9c-4b03-a5ae-afb19933657b
+  connectorVersion: 1.0.1
+  logoUri: >-
+    https://static.integration.app/connectors/gusto/logo-229bc97d-3845-485d-a7ed-1ee3db9ceb9d.png
+  dataCollectionsCount: 10
+  operationsCount: 163
+  eventsCount: 0
+  authType: oauth2
+integrationKey: gusto

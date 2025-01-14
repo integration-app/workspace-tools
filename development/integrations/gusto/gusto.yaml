@@ -1,0 +1,6 @@
+id: 66991c9ea3a91449804073c7
+key: gusto
+name: Gusto
+connectorId: 65266e3d70089fac48484f27
+baseUri: s3://integration-app-connectors/public/717d272d-fd9c-4b03-a5ae-afb19933657b
+connectorVersion: 1.0.1

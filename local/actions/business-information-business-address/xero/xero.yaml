@@ -1,0 +1,41 @@
+isCustomized: true
+parentId: 677ea40866bb414cfbd5f0bc
+integrationId: 66991cb7ec0742c929358972
+key: business-information-business-address
+id: 677ea40866bb414cfbd5f0c3
+name: 'Bussiness Information: Business Address Xero'
+type: list-data-records
+config:
+  fieldMapping: {}
+  dataSource:
+    key: companies
+outputMapping:
+  street:
+    $concat:
+      delimiter: ' '
+      values:
+        - $var: $.output.records[0].fields.Addresses[0].AddressLine1
+        - $var: $.output.records[0].fields.Addresses[0].AddressLine2
+        - $var: $.output.records[0].fields.Addresses[0].AddressLine3
+        - $var: $.output.records[0].fields.Addresses[0].AddressLine4
+  city:
+    $var: $.output.records[0].fields.Addresses[0].City
+  state:
+    $var: $.output.records[0].fields.Addresses[0].Region
+  postalCode:
+    $var: $.output.records[0].fields.Addresses[0].PostalCode
+  country:
+    $case:
+      cases:
+        - filter:
+            $eval:
+              $var: $.output.records[0].fields.Addresses[0].Country
+            isNotEmpty: null
+          value:
+            $var: $.output.records[0].fields.Addresses[0].Country
+      default:
+        $var: $.output.records[0].fields.CountryCode
+isDeployed: true
+configurationState: NOT_CONFIGURED
+configurationStateMessage: Missing fields configuration.
+integrationKey: xero

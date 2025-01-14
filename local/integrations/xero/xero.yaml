@@ -1,0 +1,6 @@
+id: 66991cb7ec0742c929358972
+key: xero
+name: Xero
+connectorId: 642c613b986ed1caad98172b
+baseUri: s3://integration-app-connectors/public/d475f280-d078-4054-94d4-03a5a1a63011
+connectorVersion: 1.0.0

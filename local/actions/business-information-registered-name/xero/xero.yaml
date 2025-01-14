@@ -1,0 +1,16 @@
+isCustomized: true
+parentId: 677d10b4ffe897a736258ce1
+integrationId: 66991cb7ec0742c929358972
+key: business-information-registered-name
+id: 677d10b4ffe897a736258ce8
+name: 'Bussiness Information: Registered Name Xero'
+type: list-data-records
+config:
+  dataSource:
+    key: companies
+outputMapping:
+  $var: $.output.records[0].fields.LegalName
+isDeployed: true
+configurationState: NOT_CONFIGURED
+configurationStateMessage: Missing fields configuration.
+integrationKey: xero

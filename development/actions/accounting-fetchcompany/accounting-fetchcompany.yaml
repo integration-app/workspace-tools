@@ -1,0 +1,9 @@
+isCustomized: true
+key: accounting-fetchcompany
+id: 66991cb8f4e2d58d0affcd6e
+name: 'Accounting: Fetch Company'
+type: list-data-records
+config:
+  dataSource:
+    udm: companies
+isDeployed: true

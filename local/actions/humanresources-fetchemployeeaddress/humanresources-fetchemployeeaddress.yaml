@@ -1,0 +1,9 @@
+isCustomized: true
+key: humanresources-fetchemployeeaddress
+id: 66991cb96b1b36b7962bec1f
+name: 'Human Resources: Fetch Employee Address'
+type: api-request-to-external-app
+config:
+  request:
+    method: GET
+isDeployed: true

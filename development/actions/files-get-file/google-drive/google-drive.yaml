@@ -1,0 +1,47 @@
+isCustomized: true
+parentId: 6752fe6b190c6705e474ef87
+integrationId: 6752fdbff31e1b4d5dd4f8c8
+key: files-get-file
+id: 6752fe6f709f418c765512d4
+name: 'Files: Get File'
+archivedAt: null
+type: find-data-record-by-id
+inputSchema:
+  type: object
+  properties:
+    fileId:
+      type: string
+config:
+  fieldMapping:
+    defaultUnifiedValue:
+      $var: $
+    defaultValue:
+      id:
+        $var: $.id
+      mimeType:
+        $var: $.mimeType
+      name:
+        $var: $.name
+      description:
+        $var: $.description
+      previewUri:
+        $var: $.thumbnailLink
+      size:
+        $var: $.size
+      downloadUri:
+        $var: $.webContentLink
+      uri:
+        $var: $.webViewLink
+      createdTime:
+        $var: $.createdTime
+      folderId:
+        $var: $.folderId
+  dataSource:
+    udm: files
+    collectionKey: files
+    defaultPath: /data/files
+  id:
+    $var: $.input.fileId
+isDeployed: false
+configurationState: CONFIGURED
+integrationKey: google-drive

@@ -1,0 +1,23 @@
+isCustomized: true
+parentId: 66991cb99aca0c293af5bc8c
+integrationId: 66991c9ea3a91449804073c7
+key: humanresources-fetchindustry
+id: 66991cc36b1b36b7962beccf
+name: 'Human Resources: Fetch Industry (Development)'
+archivedAt: null
+type: api-request-to-external-app
+inputSchema:
+  type: object
+  properties:
+    companyId:
+      type: string
+config:
+  request:
+    method: GET
+    path: /v1/companies/{company_id}
+    pathParameters:
+      company_id:
+        $var: $.input.companyId
+isDeployed: true
+configurationState: CONFIGURED
+integrationKey: gusto

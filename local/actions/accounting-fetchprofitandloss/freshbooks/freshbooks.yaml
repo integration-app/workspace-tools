@@ -1,0 +1,317 @@
+isCustomized: true
+parentId: 66991cb8042f64915c234836
+integrationId: 66991c9bf4e2d58d0affcc17
+key: accounting-fetchprofitandloss
+id: 66991cbfa3a91449804075e6
+name: 'Accounting: Get Profit and Loss'
+archivedAt: null
+type: api-request-to-external-app
+inputSchema:
+  type: object
+  properties:
+    accountId:
+      type: string
+  required:
+    - accountId
+config:
+  request:
+    method: GET
+    path:
+      $tpl:
+        template: >-
+          /accounting/account/{1719233177257}/reports/accounting/profitloss_entity
+        values:
+          '1719233177257':
+            $var: $.input.accountId
+  responseSchema:
+    type: object
+    properties:
+      response:
+        type: object
+        properties:
+          result:
+            type: object
+            properties:
+              profitloss:
+                type: object
+                properties:
+                  cash_based:
+                    type: boolean
+                  company_name:
+                    type: string
+                  currency_code:
+                    type: string
+                  dates:
+                    type: array
+                    items:
+                      type: string
+                  download_token:
+                    type: string
+                  end_date:
+                    type: string
+                  expenses:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        category_id:
+                          type: string
+                          nullable: true
+                        children:
+                          type: array
+                          items:
+                            type: object
+                        data:
+                          type: array
+                          items:
+                            type: object
+                        description:
+                          type: string
+                        entry_type:
+                          type: string
+                        jesa_id:
+                          type: string
+                          nullable: true
+                        total:
+                          type: object
+                          properties:
+                            amount:
+                              type: string
+                            code:
+                              type: string
+                  gross_margin:
+                    type: object
+                    properties:
+                      category_id:
+                        type: string
+                        nullable: true
+                      children:
+                        type: array
+                        items:
+                          type: object
+                      data:
+                        type: array
+                        items:
+                          type: object
+                      description:
+                        type: string
+                      entry_type:
+                        type: string
+                      jesa_id:
+                        type: string
+                        nullable: true
+                      total:
+                        type: object
+                        properties:
+                          amount:
+                            type: string
+                          code:
+                            type: string
+                  group_by_account:
+                    type: boolean
+                  income:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        category_id:
+                          type: string
+                          nullable: true
+                        children:
+                          type: array
+                          items:
+                            type: object
+                        data:
+                          type: array
+                          items:
+                            type: object
+                        description:
+                          type: string
+                        entry_type:
+                          type: string
+                        jesa_id:
+                          type: string
+                          nullable: true
+                        total:
+                          type: object
+                          properties:
+                            amount:
+                              type: string
+                            code:
+                              type: string
+                  labels:
+                    type: array
+                    items:
+                      type: string
+                  locale:
+                    type: string
+                  net_profit:
+                    type: object
+                    properties:
+                      category_id:
+                        type: string
+                        nullable: true
+                      children:
+                        type: array
+                        items:
+                          type: object
+                      data:
+                        type: array
+                        items:
+                          type: object
+                      description:
+                        type: string
+                      entry_type:
+                        type: string
+                      jesa_id:
+                        type: string
+                        nullable: true
+                      total:
+                        type: object
+                        properties:
+                          amount:
+                            type: string
+                          code:
+                            type: string
+                  resolution:
+                    type: string
+                    nullable: true
+                  start_date:
+                    type: string
+                  total_expenses:
+                    type: object
+                    properties:
+                      category_id:
+                        type: string
+                        nullable: true
+                      children:
+                        type: array
+                        items:
+                          type: object
+                      data:
+                        type: array
+                        items:
+                          type: object
+                      description:
+                        type: string
+                      entry_type:
+                        type: string
+                      jesa_id:
+                        type: string
+                        nullable: true
+                      total:
+                        type: object
+                        properties:
+                          amount:
+                            type: string
+                          code:
+                            type: string
+                  total_income:
+                    type: object
+                    properties:
+                      category_id:
+                        type: string
+                        nullable: true
+                      children:
+                        type: array
+                        items:
+                          type: object
+                      data:
+                        type: array
+                        items:
+                          type: object
+                      description:
+                        type: string
+                      entry_type:
+                        type: string
+                      jesa_id:
+                        type: string
+                        nullable: true
+                      total:
+                        type: object
+                        properties:
+                          amount:
+                            type: string
+                          code:
+                            type: string
+outputMapping:
+  statusCode: null
+  data:
+    Header:
+      Time: null
+      ReportName:
+        $var: $.output.data.response.result.profitloss.company_name
+      DateMacro: this calendar year-to-date
+      ReportBasis: Accrual
+      StartPeriod: '2024-06-01'
+      EndPeriod: '2024-06-30'
+      SummarizeColumnsBy: Total
+      Currency: USD
+      Option:
+        - Name: AccountingStandard
+          Value: GAAP
+        - Name: NoReportData
+          Value: false
+    Columns:
+      Column:
+        - ColTitle: Account
+          ColType: Account
+          MetaData:
+            - Name: ColKey
+              Value: account
+        - ColTitle: Total
+          ColType: Money
+          MetaData:
+            - Name: ColKey
+              Value: total
+    Rows:
+      Row:
+        - Header:
+            ColData:
+              - value: Income
+              - value: ''
+          Rows:
+            Row:
+              - ColData:
+                  - value:
+                      $var: >-
+                        $.output.data.response.result.profitloss.income[0].description
+                    id: >-
+                      $.output.data.response.result.profitloss.income[0].category_id
+                  - value:
+                      $var: >-
+                        $.output.data.response.result.profitloss.income[0].total.amount
+                type: Data
+              - ColData:
+                  - value:
+                      $var: >-
+                        $.output.data.response.result.profitloss.income[1].description
+                  - value:
+                      $var: >-
+                        $.output.data.response.result.profitloss.income[1].total.amount
+          Summary:
+            ColData:
+              - value: Gross Profit
+              - value:
+                  $var: >-
+                    $.output.data.response.result.profitloss.gross_margin.total.amount
+          type: Section
+          group: Income
+        - Header:
+            ColData:
+              - value: Net Profit
+              - value:
+                  $var: >-
+                    $.output.data.response.result.profitloss.net_profit.total.amount
+          Summary:
+            ColData:
+              - value: Total Net Profit
+              - value:
+                  $var: >-
+                    $.output.data.response.result.profitloss.net_profit.total.amount
+          type: Section
+          group: NetIncome
+  headers: null
+isDeployed: true
+configurationState: CONFIGURED
+integrationKey: freshbooks
