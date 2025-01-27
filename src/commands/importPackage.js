@@ -325,7 +325,7 @@ function elementIsCustomized(element) {
 }
 
 function matchElement(element, workspaceData) {
-    const matchedElements = workspaceData[elementType]?.filter((item) => (item.key == element.key && (item.integrationKey == element.integrationKey)))
+    const matchedElements = workspaceData[elementType]?.filter((item) => (item.key == element.key && (item.integrationKey == element.integrationKey) && (!item.archivedAt)))
     if (matchedElements.length > 1) {
         throw new Error(`More than one ${element.integrationKey || "universal"} ${elementType} with key ${element.key} found in the workspace`)
     }
