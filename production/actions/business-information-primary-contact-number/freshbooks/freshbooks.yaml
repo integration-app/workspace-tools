@@ -1,0 +1,25 @@
+isCustomized: true
+parentId: 677e660842e264a4e4876065
+integrationId: 66991c9bf4e2d58d0affcc17
+key: business-information-primary-contact-number
+id: 677e660842e264a4e487606a
+name: 'Bussiness Information: Mailing Address Freshbooks'
+type: list-data-records
+config:
+  dataSource:
+    key: companies
+  fieldMapping: {}
+outputMapping:
+  $case:
+    cases:
+      - filter:
+          $eval:
+            $var: $.output.records[0].fields.phone_number.phone_number
+          isNotEmpty: null
+        value:
+          $var: $.output.records[0].fields.phone_number.phone_number
+    default: ''
+isDeployed: true
+configurationState: NOT_CONFIGURED
+configurationStateMessage: Missing fields configuration.
+integrationKey: freshbooks

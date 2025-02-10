@@ -1,0 +1,23 @@
+isCustomized: true
+parentId: 66991cb96b1b36b7962bec1f
+integrationId: 66991c9ea3a91449804073c7
+key: humanresources-fetchemployeeaddress
+id: 66991cc29aca0c293af5bd64
+name: 'Human Resources: Fetch Employee Address (Development)'
+archivedAt: null
+type: api-request-to-external-app
+inputSchema:
+  type: object
+  properties:
+    employeeId:
+      type: string
+config:
+  request:
+    method: GET
+    path: /v1/employees/{employee_id}/home_addresses
+    pathParameters:
+      employee_id:
+        $var: $.input.employeeId
+isDeployed: true
+configurationState: CONFIGURED
+integrationKey: gusto

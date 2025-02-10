@@ -1,0 +1,17 @@
+isCustomized: true
+parentId: 677e758320608f9f4701366b
+integrationId: 66991ca4ec0742c92935885a
+key: business-information-industry
+id: 677e758420608f9f47013672
+name: 'Business Information: Industry Quickbooks'
+type: list-data-records
+config:
+  fieldMapping: {}
+  dataSource:
+    key: companies
+outputMapping:
+  $jsonata: $.output.records[0].fields.NameValue[Name="CompanyType"].Value
+isDeployed: true
+configurationState: NOT_CONFIGURED
+configurationStateMessage: Missing fields configuration.
+integrationKey: quickbooks

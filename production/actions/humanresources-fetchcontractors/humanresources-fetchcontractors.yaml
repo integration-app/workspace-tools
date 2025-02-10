@@ -1,0 +1,12 @@
+isCustomized: true
+key: humanresources-fetchcontractors
+id: 66991cb9ec0742c92935898f
+name: 'Human Resources: Fetch Contractors'
+type: api-request-to-external-app
+inputSchema:
+  type: object
+  properties: {}
+config:
+  request:
+    method: GET
+isDeployed: true

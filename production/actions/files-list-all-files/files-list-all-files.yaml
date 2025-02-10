@@ -1,0 +1,12 @@
+isCustomized: false
+key: files-list-all-files
+id: 6752fe385ba164300043ba7e
+name: 'Files: List All Files'
+type: list-data-records
+config:
+  fieldMapping:
+    defaultUnifiedValue:
+      $var: $
+  dataSource:
+    udm: files
+isDeployed: true

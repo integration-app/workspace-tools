@@ -1,0 +1,9 @@
+isCustomized: true
+key: business-information-industry
+id: 677e758320608f9f4701366b
+name: 'Bussiness Information: Industry'
+type: list-data-records
+config:
+  dataSource:
+    udm: null
+isDeployed: true

@@ -1,0 +1,30 @@
+isCustomized: true
+parentId: 677e50c85ff0d9c49cf27c0f
+integrationId: 66991c9bf4e2d58d0affcc17
+key: business-information-mailing-address
+id: 677e50c85ff0d9c49cf27c14
+name: 'Bussiness Information: Mailing Address'
+archivedAt: null
+type: list-data-records
+config:
+  dataSource:
+    key: companies
+  fieldMapping: {}
+outputMapping:
+  street:
+    $concat:
+      values:
+        - $var: $.output.records[0].fields.address.street
+        - $var: $.output.records[0].fields.address.street2
+  city:
+    $var: $.output.records[0].fields.address.city
+  state:
+    $var: $.output.records[0].fields.address.province
+  postalCode:
+    $var: $.output.records[0].fields.address.postal_code
+  country:
+    $var: $.output.records[0].fields.address.country
+isDeployed: true
+configurationState: NOT_CONFIGURED
+configurationStateMessage: Missing fields configuration.
+integrationKey: freshbooks

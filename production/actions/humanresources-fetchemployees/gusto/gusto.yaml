@@ -1,0 +1,23 @@
+isCustomized: true
+parentId: 66991cb98141c0ac6fd101ea
+integrationId: 66991c9ea3a91449804073c7
+key: humanresources-fetchemployees
+id: 66991cc39aca0c293af5bd6f
+name: 'Human Resources: Fetch Employees (Development)'
+archivedAt: null
+type: list-data-records
+inputSchema:
+  type: object
+  properties:
+    companyId:
+      type: string
+config:
+  dataSource:
+    collectionKey: employees
+    collectionParameters:
+      company_id:
+        $var: $.input.companyId
+isDeployed: true
+configurationState: NOT_CONFIGURED
+configurationStateMessage: Missing fields configuration.
+integrationKey: gusto

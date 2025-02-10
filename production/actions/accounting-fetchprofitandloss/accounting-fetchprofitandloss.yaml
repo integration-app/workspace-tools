@@ -1,0 +1,10 @@
+isCustomized: true
+key: accounting-fetchprofitandloss
+id: 66991cb8042f64915c234836
+name: 'Accounting: Fetch Profit and Loss'
+archivedAt: null
+type: api-request-to-external-app
+config:
+  request:
+    method: GET
+isDeployed: true

@@ -1,0 +1,9 @@
+isCustomized: true
+key: business-information-mailing-address
+id: 677e50c85ff0d9c49cf27c0f
+name: 'Bussiness Information: Mailing Address'
+type: list-data-records
+config:
+  dataSource:
+    udm: null
+isDeployed: true

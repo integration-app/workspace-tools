@@ -1,0 +1,36 @@
+isCustomized: true
+parentId: 677ea40866bb414cfbd5f0bc
+integrationId: 66991ca4ec0742c92935885a
+key: business-information-business-address
+id: 677ea40866bb414cfbd5f0c2
+name: 'Bussiness Information: Business Address Quickbooks'
+type: list-data-records
+config:
+  fieldMapping: {}
+  dataSource:
+    key: companies
+outputMapping:
+  street:
+    $var: $.output.records[0].fields.LegalAddr.Line1
+  city:
+    $var: $.output.records[0].fields.LegalAddr.City
+  state:
+    $var: $.output.records[0].fields.LegalAddr.CountrySubDivisionCode
+  postalCode:
+    $var: $.output.records[0].fields.LegalAddr.PostalCode
+  country:
+    $case:
+      cases:
+        - filter:
+            $and:
+              - $eval:
+                  $var: $.output.records[0].fields.LegalAddr.Country
+                isNotEmpty: null
+          value:
+            $var: $.output.records[0].fields.LegalAddr.Country
+      default:
+        $var: $.output.records[0].fields.Country
+isDeployed: true
+configurationState: NOT_CONFIGURED
+configurationStateMessage: Missing fields configuration.
+integrationKey: quickbooks

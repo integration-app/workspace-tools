@@ -1,0 +1,37 @@
+isCustomized: true
+parentId: 677e50c85ff0d9c49cf27c0f
+integrationId: 66991ca4ec0742c92935885a
+key: business-information-mailing-address
+id: 677e50c85ff0d9c49cf27c15
+name: 'Bussiness Information: Mailing Address Quickbooks'
+type: list-data-records
+config:
+  fieldMapping: {}
+  dataSource:
+    key: companies
+outputMapping:
+  street:
+    $var: $.output.records[0].fields.CustomerCommunicationAddr.Line1
+  city:
+    $var: $.output.records[0].fields.CustomerCommunicationAddr.City
+  state:
+    $var: >-
+      $.output.records[0].fields.CustomerCommunicationAddr.CountrySubDivisionCode
+  postalCode:
+    $var: $.output.records[0].fields.CustomerCommunicationAddr.PostalCode
+  country:
+    $case:
+      cases:
+        - filter:
+            $and:
+              - $eval:
+                  $var: $.output.records[0].fields.CustomerCommunicationAddr.Country
+                isNotEmpty: null
+          value:
+            $var: $.output.records[0].fields.CustomerCommunicationAddr.Country
+      default:
+        $var: $.output.records[0].fields.Country
+isDeployed: true
+configurationState: NOT_CONFIGURED
+configurationStateMessage: Missing fields configuration.
+integrationKey: quickbooks

@@ -1,0 +1,16 @@
+isCustomized: true
+parentId: 66991cb8ec0742c929358981
+integrationId: 66991cb7ec0742c929358972
+key: accounting-fetchemployees
+id: 66991cbfa3a91449804075d6
+name: 'Accounting: Fetch Employees (Development)'
+archivedAt: null
+type: list-data-records
+config:
+  dataSource:
+    collectionKey: users
+  fieldMapping:
+    key: employees
+isDeployed: false
+configurationState: CONFIGURED
+integrationKey: xero

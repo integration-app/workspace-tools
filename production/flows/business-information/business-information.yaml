@@ -1,0 +1,76 @@
+key: business-information
+id: 677d09501b15c38fe97fa00f
+name: Business Information
+nodes:
+  api-trigger:
+    type: api-trigger
+    name: API Trigger
+    links:
+      - key: extract-registered-name
+        filter:
+          $and: []
+      - key: business-address
+      - key: mailing-address
+      - key: primary-contact
+      - key: industry
+  transform-data:
+    type: transform-data
+    name: Transform Data
+    config:
+      output:
+        registeredName:
+          $var: $.input.extract-registered-name
+        businessAddress:
+          $var: $.input.business-address
+        mailingAddress:
+          $var: $.input.mailing-address
+        primaryContactNumber:
+          $var: $.input.primary-contact
+        industry:
+          $var: $.input.industry
+      code: console.log()
+    links: []
+  extract-registered-name:
+    type: run-action
+    name: Extract Registered Name
+    config:
+      action:
+        key: business-information-registered-name
+    links:
+      - key: transform-data
+        name: ''
+  mailing-address:
+    type: run-action
+    name: Mailing Address
+    config:
+      action:
+        key: business-information-mailing-address
+    links:
+      - key: transform-data
+  primary-contact:
+    type: run-action
+    name: Primary Contact
+    config:
+      action:
+        key: business-information-primary-contact-number
+    links:
+      - key: transform-data
+  industry:
+    type: run-action
+    name: Industry
+    config:
+      action:
+        key: business-information-industry
+    links:
+      - key: transform-data
+  business-address:
+    type: run-action
+    name: Business Address
+    config:
+      action:
+        key: business-information-business-address
+    links:
+      - key: transform-data
+autoCreateInstances: false
+customized: true
+isDeployed: true
