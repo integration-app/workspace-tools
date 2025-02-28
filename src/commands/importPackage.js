@@ -13,26 +13,26 @@ const basePath = path.join(__dirname, "../../dist")
 
 async function importPackage() {
     dotenv.config();
-    
+
     const token = generateAccessToken(process.env.IMPORT_WORKSPACE_KEY, process.env.IMPORT_WORKSPACE_SECRET)
     const options = { token }
     if (process.env.IMPORT_API_URI) options.apiUri = process.env.IMPORT_API_URI
     const iApp = new IntegrationAppClient(options)
 
     const warnings = [] // Collect all warnings and display them at the end
-    
+
 
     const workspaceData = await getWorkspaceData(iApp, logs = "minified")
     // Matching imported data with existing data
-    
-    
+
+
     //TODO: Add check if custom connector already exists, when UUID is available
 
     const data = {}
     const elementTypes = fs.readdirSync(basePath)
     coloredLog(`Loading Files`, "BgBlue")
 
-    for (elementType of elementTypes) { 
+    for (elementType of elementTypes) {
         data[elementType] = []
         console.log(path.join(basePath, elementType))
         const elementKeys = fs.readdirSync(path.join(basePath, elementType))
@@ -41,7 +41,7 @@ async function importPackage() {
             for (element of elements) {
                 // check if element is directory or file
                 const elementPath = path.join(basePath, elementType, elementKey, element)
-                
+
                 if (fs.statSync(elementPath).isDirectory()) {
                     data[elementType].push(YAML.load(fs.readFileSync(path.join(elementPath, `${element}.yaml`), 'utf8')))
                 } else {
@@ -55,9 +55,9 @@ async function importPackage() {
 
     const { universalElements, integrationSpecificElements } = splitWorkspaceData(data)
 
-    
+
     warnings.push(...await syncIntegrations(data, workspaceData, iApp))
-    
+
     // Regfetch latest integrations
     workspaceData.integrations = await iApp.integrations.findAll()
 
@@ -149,7 +149,7 @@ async function syncIntegrations(sourceData, destinationData, iApp, warnings = []
                 });
 
                 const connectorIdToUpload = connectorsMapping[connector.id]
-                
+
                 if (version != "development") {
                     formData.append('version', version);
                     formData.append('changelog', "Imported Version");
@@ -167,7 +167,7 @@ async function syncIntegrations(sourceData, destinationData, iApp, warnings = []
                         }
                     });
 
-                } else { 
+                } else {
                     console.log(`Uploading connector ${connectorIdToUpload}`)
                     await iApp.post(`connectors/${connectorIdToUpload}/upload`, formData, {
                         headers: {
@@ -212,7 +212,7 @@ async function syncIntegrations(sourceData, destinationData, iApp, warnings = []
                 const targetConnectorId = connectorsMapping[integration.connectorId]
                 const targetConnectorVersion = integration.connectorVersion
                 console.log(`Switching integration ${integration.key} to version ${integration.connectorVersion} of connector ${targetConnectorId}`)
-                const payload = { 
+                const payload = {
                     connectorVersion: targetConnectorVersion
                 }
                 if (matchedIntegration.connectorId != targetConnectorId) {
@@ -232,7 +232,7 @@ async function syncIntegrations(sourceData, destinationData, iApp, warnings = []
         coloredLog("Integration missmatch errors. Make sure you have those applications in your destination workspace", "BgRed")
         throw new Error("Integration missmatch errors")
     }
-    
+
     return warnings
 }
 
@@ -249,15 +249,18 @@ async function syncElements(data, workspaceData, iApp) {
 
         for (element of data[elementType]) {
 
-            // Cleanup 
+            // Cleanup
             delete element.integrationId
+
+            if (!element.meta) element.meta = {};
+            element.meta.skipValidation = true;
 
             destinationElement = matchElement(element, workspaceData)
 
             if (destinationElement) {
 
                 if (!hasParent(element) || (elementIsCustomized(element) && hasParent(element))) {
-                    // Update the element without parent OR the integration-specific element that should be customized 
+                    // Update the element without parent OR the integration-specific element that should be customized
                     await iApp[INTEGRATION_ELEMENTS[elementType].element](destinationElement.id).put(element)
                     coloredLog(`Updated ${element.integrationKey || "universal"} ${INTEGRATION_ELEMENTS[elementType].element} ${element.key}`, "Cyan")
 
