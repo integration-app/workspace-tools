@@ -2,8 +2,6 @@
 
 > ⚠️ **DEPRECATED**: This tool has been deprecated. Please use the official [Membrane CLI](https://www.npmjs.com/package/@integration-app/membrane-cli) instead, which provides enhanced functionality and better support for workspace management.
 
-This repository is archived and no longer maintained. For the latest workspace management tools and features, please refer to the [Membrane CLI documentation](https://www.npmjs.com/package/@integration-app/membrane-cli).
-
 ## Features
 
 - Export workspace data including custom connectors, integrations, actions, and more
